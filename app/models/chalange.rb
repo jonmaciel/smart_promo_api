@@ -1,0 +1,2 @@
+class Chalange < ApplicationRecord
+end
