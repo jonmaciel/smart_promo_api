@@ -14,7 +14,7 @@ class GraphqlController < ApplicationController
     handle_error_in_development e
   end
   # curl -H "Content-Type: application/json" -X POST -d '{"email":"joaomaciel.n@mail.com","password":"123123123"}' http://localhost:3000/authenticate
-  # curl -H "Content-Type: application/json" -H "Authorization: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1ODgyOTcxNDR9.UoWmJUr4XS1eaNFEqHh6jnsf5PskcAhVwvxOFffuUxs" -X POST -d '{ promotion(id: 1) { id } }"}' http://localhost:3000/graphql
+  # curl -H "Content-Type: application/json" -H "Authorization: eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1ODgyOTcxNDR9.UoWmJUr4XS1eaNFEqHh6jnsf5PskcAhVwvxOFffuUxs" -X POST -d '{ partner (id: 1) { id } }' http://localhost:3000/graphql
 
   private
 

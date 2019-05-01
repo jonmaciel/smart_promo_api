@@ -1,7 +1,5 @@
 FactoryBot.define do
-  factory :prize do
+  factory :partner do
     sequence(:name) { |n| "Name #{n}"}
-
-    promotion
   end
 end

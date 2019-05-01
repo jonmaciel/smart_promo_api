@@ -1,5 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Partner, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe Partner, type: :model do
+  describe 'basic validations' do
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_presence_of(:cnpj) }
+    it { is_expected.to validate_presence_of(:adress) }
+    it { is_expected.to validate_uniqueness_of(:cnpj) }
+    it { is_expected.to validate_length_of(:cnpj).is_equal_to(14) }
+  end
 end
