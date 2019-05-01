@@ -8,6 +8,11 @@ gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'graphql', '1.9.4'
+gem 'simple_command'
+gem 'graphql-errors'
+gem 'rack-cors', :require => 'rack/cors'
+gem 'jwt'
+gem 'bcrypt', '3.1.12'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

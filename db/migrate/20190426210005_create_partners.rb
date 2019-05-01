@@ -4,8 +4,11 @@ class CreatePartners < ActiveRecord::Migration[5.2]
       t.string :name
       t.string :adress
       t.string :cnpj
-      t.string :geolocation
-      t.string :email
+      t.string :adress
+      t.string :number
+      t.string :complementary_address
+      t.string :latitude
+      t.string :longitude
       t.references :partner_profile, index: true
 
       t.timestamps

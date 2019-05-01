@@ -10,10 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_26_212116) do
+ActiveRecord::Schema.define(version: 2019_05_01_000922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "auths", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "password_digest", null: false
+    t.string "source_type", null: false
+    t.bigint "source_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_id", "source_type"], name: "index_auths_on_source_id_and_source_type"
+    t.index ["source_type", "source_id"], name: "index_auths_on_source_type_and_source_id"
+  end
 
   create_table "chalange_progresses", force: :cascade do |t|
     t.integer "progress"
@@ -77,8 +88,8 @@ ActiveRecord::Schema.define(version: 2019_04_26_212116) do
     t.string "name"
     t.string "adress"
     t.string "cnpj"
-    t.string "geolocation"
-    t.string "email"
+    t.string "latitude"
+    t.string "longitude"
     t.bigint "partner_profile_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -120,12 +131,13 @@ ActiveRecord::Schema.define(version: 2019_04_26_212116) do
   end
 
   create_table "wallets", force: :cascade do |t|
-    t.integer "source_id"
-    t.string "source_type"
+    t.string "source_type", null: false
+    t.bigint "source_id", null: false
     t.string "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["source_id", "source_type"], name: "index_wallets_on_source_id_and_source_type"
+    t.index ["source_type", "source_id"], name: "index_wallets_on_source_type_and_source_id"
   end
 
   add_foreign_key "chalange_progresses", "chalanges"

@@ -19,17 +19,10 @@ Bundler.require(*Rails.groups)
 
 module SmartPromoApi
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2
+    config.autoload_paths << Rails.root.join('lib')
 
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration can go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded after loading
-    # the framework and any gems in your application.
-
-    # Only loads a smaller set of middleware suitable for API only apps.
-    # Middleware like session, flash, cookies can be added back manually.
-    # Skip views, helpers and assets when generating a new resource.
+    Dir[File.join(Rails.root, 'lib', '*.rb')].each { |l| require l }
     config.api_only = true
   end
 end

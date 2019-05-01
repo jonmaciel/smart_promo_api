@@ -20,13 +20,13 @@ describe Types::PartnerType do
     it { is_expected.to be_of_type 'String' }
   end
 
-  describe 'geolocation' do
-    subject { described_class.fields['geolocation'].to_graphql }
+  describe 'latitude' do
+    subject { described_class.fields['latitude'].to_graphql }
     it { is_expected.to be_of_type 'String' }
   end
 
-  describe 'email' do
-    subject { described_class.fields['email'].to_graphql }
+  describe 'longitude' do
+    subject { described_class.fields['longitude'].to_graphql }
     it { is_expected.to be_of_type 'String' }
   end
 
