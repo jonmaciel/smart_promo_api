@@ -4,7 +4,10 @@ module Mutations
     null true
     description 'Update new partner'
 
-    argument :id, Int, required: false
+    argument :id, Int, required: true
+    argument :email, String, required: false
+    argument :password, String, required: false
+    argument :password_confirmation, String, required: false
     argument :name, String, required: false
     argument :adress, String, required: false
     argument :cnpj, String, required: false 
@@ -16,16 +19,23 @@ module Mutations
 
     def resolve(input)
       partner = Partner.find(input[:id])
+      auth = partner.auth
 
-      input.except(:id).each do |attribute, value|
-        partner.send("#{attribute}=", value)
+      if input[:email] || input[:password]
+        input[:auth_attributes] = { id: auth.id }
+        input[:auth_attributes][:email] = input.delete(:email) if input[:email]
+        input[:auth_attributes][:password] = input.delete(:password) if input[:password]
+        input[:auth_attributes][:password_confirmation] = input.delete(:password_confirmation) if input[:email]
       end
 
-      if partner.save
-        { partner: partner }
-      else
-        { partner: nil, errors: partner.errors.full_messages }
-      end
+      input.except!(:id, :email, :password, :password_confirmation)
+      partner.update_attributes!(input)
+      
+      { partner: partner }
+    rescue ActiveRecord::RecordNotFound => e
+      { success: false, errors: e.to_s }
+    rescue ActiveRecord::ActiveRecordError => e
+      { success: false, errors: e.to_s }
     end
   end
 end

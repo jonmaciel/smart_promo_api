@@ -2,6 +2,7 @@ module Types
   class MutationType < Types::BaseObject
 
     field :create_partner, mutation: Mutations::CreatePartner
+    field :delete_partner, mutation: Mutations::DeletePartner
     field :update_partner, mutation: Mutations::UpdatePartner
 
     field :test_field, String, null: false,

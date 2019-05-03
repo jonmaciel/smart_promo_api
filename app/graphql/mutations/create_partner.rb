@@ -31,11 +31,11 @@ module Mutations
         }
       )
 
-      if partner.save
-        { partner: partner }
-      else
-        { partner: nil, errors: partner.errors.full_messages }
-      end
+      partner.save!
+
+      { partner: partner }
+    rescue ActiveRecord::ActiveRecordError => e
+      { partner: nil, errors: e.to_s }
     end
   end
 end
