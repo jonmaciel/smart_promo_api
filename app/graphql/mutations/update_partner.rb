@@ -15,7 +15,7 @@ module Mutations
     argument :longitude, String, required: false
 
     field :partner, Types::PartnerType, null: true
-    field :errors, [String], null: true
+    field :errors, String, null: true
 
     def resolve(input)
       partner = Partner.find(input[:id])

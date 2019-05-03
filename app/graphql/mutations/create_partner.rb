@@ -15,7 +15,7 @@ module Mutations
     argument :longitude, String, required: false
 
     field :partner, Types::PartnerType, null: true
-    field :errors, [String], null: true
+    field :errors, String, null: true
 
     def resolve(input)
       partner = Partner.new(
@@ -28,6 +28,9 @@ module Mutations
           email: input[:email],
           password: input[:password],
           password_confirmation: input[:password_confirmation],
+        },
+        wallet_attributes: {
+          code: DateTime.now.strftime('%Q')
         }
       )
 
