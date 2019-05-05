@@ -1,27 +1,7 @@
 require 'rails_helper'
 
-xdescribe Promotion, type: :model do
-  it 'has a valid factory' do
-    expect(build(:promotion)).to be_valid
-  end
-
-  let(:promotion) { create(:promotion) }
-  let(:attributes) do
-    {
-      name: 'A test prize',
-      promotion: promotion
-    }
-  end
-
-  let(:prize) { create(:prize, **attributes) }
-
-  describe 'model validations' do
-    it { expect(prize).to allow_value(attributes[:name]).for(:name) }
-    it { expect(prize).to validate_presence_of(:name) }
-    it { expect(prize).to validate_uniqueness_of(:name)}
-  end
-
-  describe 'model associations' do
-    it { expect(prize).to belong_to(:promotion) }
+describe Promotion, type: :model do
+  describe 'associations' do
+    it { is_expected.to belong_to(:partner) }
   end
 end

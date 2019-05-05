@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
   enable_extension "plpgsql"
 
   create_table "auths", force: :cascade do |t|
+    t.boolean "adm", default: false, null: false
     t.string "email", null: false
     t.string "password_digest", null: false
     t.string "source_type", null: false
@@ -39,7 +40,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
   create_table "chalanges", force: :cascade do |t|
     t.string "Name"
     t.integer "geal"
-    t.integer "type"
+    t.integer "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -88,6 +89,8 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.string "name"
     t.string "adress"
     t.string "cnpj"
+    t.string "number"
+    t.string "complementary_address"
     t.string "latitude"
     t.string "longitude"
     t.bigint "partner_profile_id"
@@ -98,7 +101,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
 
   create_table "phones", force: :cascade do |t|
     t.string "number"
-    t.integer "type"
+    t.integer "kind"
     t.bigint "partner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -108,9 +111,9 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
   create_table "promotions", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.integer "type"
+    t.integer "kind"
     t.datetime "start_datetime"
-    t.datetime "end_date_time"
+    t.datetime "end_datetime"
     t.boolean "highlighted"
     t.float "index"
     t.boolean "active"

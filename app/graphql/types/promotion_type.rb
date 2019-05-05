@@ -6,7 +6,7 @@ module Types
     field :id, Int, null: true
     field :name, String, null: true
     field :description, String, null: true
-    field :type, String, null: true
+    field :kind, String, null: true
     field :start_datetime, String, null: true
     field :end_datetime, String, null: true
     field :highlighted, Boolean, null: true

@@ -12,5 +12,6 @@ describe Partner, type: :model do
   describe 'associations' do
     it { is_expected.to have_one(:auth) }
     it { is_expected.to have_one(:wallet) }
+    it { is_expected.to have_many(:promotions) }
   end
 end

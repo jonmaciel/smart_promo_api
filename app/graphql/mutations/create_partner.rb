@@ -8,7 +8,6 @@ module Mutations
     argument :password, String, required: true
     argument :password_confirmation, String, required: true
     argument :name, String, required: true
-    argument :name, String, required: true
     argument :adress, String, required: true
     argument :cnpj, String, required: true
     argument :latitude, String, required: false
