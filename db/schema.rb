@@ -27,19 +27,19 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.index ["source_type", "source_id"], name: "index_auths_on_source_type_and_source_id"
   end
 
-  create_table "chalange_progresses", force: :cascade do |t|
+  create_table "challenge_progresses", force: :cascade do |t|
     t.integer "progress"
-    t.bigint "chalange_id"
+    t.bigint "challenge_id"
     t.bigint "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["chalange_id"], name: "index_chalange_progresses_on_chalange_id"
-    t.index ["customer_id"], name: "index_chalange_progresses_on_customer_id"
+    t.index ["challenge_id"], name: "index_challenge_progresses_on_challenge_id"
+    t.index ["customer_id"], name: "index_challenge_progresses_on_customer_id"
   end
 
-  create_table "chalanges", force: :cascade do |t|
-    t.string "Name"
-    t.integer "geal"
+  create_table "challenges", force: :cascade do |t|
+    t.string "name"
+    t.integer "goal"
     t.integer "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -143,8 +143,8 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.index ["source_type", "source_id"], name: "index_wallets_on_source_type_and_source_id"
   end
 
-  add_foreign_key "chalange_progresses", "chalanges"
-  add_foreign_key "chalange_progresses", "customers"
+  add_foreign_key "challenge_progresses", "challenges"
+  add_foreign_key "challenge_progresses", "customers"
   add_foreign_key "founds", "wallets", column: "recipient_owner_id"
   add_foreign_key "founds", "wallets", column: "sender_wallet_id"
   add_foreign_key "phones", "partners"

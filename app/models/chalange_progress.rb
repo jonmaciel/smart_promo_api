@@ -1,2 +1,0 @@
-class ChalangeProgress < ApplicationRecord
-end

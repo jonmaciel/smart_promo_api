@@ -1,0 +1,2 @@
+class ChallengeProgress < ApplicationRecord
+end
