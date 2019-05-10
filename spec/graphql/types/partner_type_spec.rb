@@ -30,5 +30,8 @@ describe Types::PartnerType do
     it { is_expected.to be_of_type 'String' }
   end
 
-  pending 'Partner profile type'
+  xdescribe 'partner_profile' do
+    subject { described_class.fields['partnerProfile'].to_graphql }
+    it { is_expected.to be_of_type 'PartnerProfile' }
+  end
 end
