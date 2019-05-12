@@ -19,13 +19,14 @@ RSpec.describe SmartPromoApiSchema do
   describe 'Create Customer' do
     let(:name) { 'Name' }
     let(:cpf) { '07712973946' }
-    let(:cellphone_number) { '41992855073' }
+    let(:cellphone_number) { '41992855075' }
     let(:email) { 'test@mail.com' }
     let(:password) { '123123123' }
     let(:variables) do
       {
         name: name,
         cpf: cpf,
+        cellphoneNumber: cellphone_number,
         email: email,
         password: password, 
         passwordConfirmation: password 
@@ -33,11 +34,13 @@ RSpec.describe SmartPromoApiSchema do
     end
     let(:mutation_string) { 
       %| 
-        mutation createCostumer($name: String!, $cpf: String!, $email: String!, $password: String!, $passwordConfirmation: String!){
-          createCostumer(name: $name,  cpf: $cpf, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
+        mutation createCostumer($name: String!, $cpf: String!, $email: String!, $cellphoneNumber: String!, $password: String!, $passwordConfirmation: String!){
+          createCostumer(name: $name,  cpf: $cpf, email: $email, password: $password, cellphoneNumber: $cellphoneNumber, passwordConfirmation: $passwordConfirmation) {
             customer {
               id
               name
+              email
+              cellphoneNumber
             }
             errors
           }
@@ -87,6 +90,8 @@ RSpec.describe SmartPromoApiSchema do
       it 'returns the righ customer' do
         expect(returned_customer['id']).to eq newest_customer.id
         expect(returned_customer['name']).to eq name
+        expect(returned_customer['cellphoneNumber']).to eq cellphone_number
+        expect(returned_customer['email']).to eq email
         expect(newest_auth.email).to eq email
         expect(newest_wallet.code).to eq 'miliseconds'
       end

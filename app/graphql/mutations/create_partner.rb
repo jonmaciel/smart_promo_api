@@ -5,6 +5,7 @@ module Mutations
     description 'Create new partner'
 
     argument :email, String, required: true
+    argument :cellphone_number, String, required: true
     argument :password, String, required: true
     argument :password_confirmation, String, required: true
     argument :name, String, required: true
@@ -24,6 +25,7 @@ module Mutations
         latitude: input[:latitude],
         longitude: input[:longitude],
         auth_attributes: {
+          cellphone_number: input[:cellphone_number],
           email: input[:email],
           password: input[:password],
           password_confirmation: input[:password_confirmation],

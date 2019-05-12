@@ -6,19 +6,11 @@ class Auth < ApplicationRecord
               format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i },
               if: -> (record) { record.email.present? }
 
-  validates :email,
-              presence: true,
-              unless: -> (record) { record.cellphone_number.present? }
-
   validates :cellphone_number,
               uniqueness: true,
-              numericality: true,
-              length: { :is => 11 },
-              if: -> (record) { record.cellphone_number.present? }
-
-  validates :cellphone_number,
               presence: true,
-              unless: -> (record) { record.email.present? }
+              numericality: true,
+              length: { :is => 11 }
 
   validates :password, presence: true, length: { minimum: 4 }, on: :create
   validates :password_confirmation, presence: true, on: :create

@@ -6,6 +6,7 @@ module Mutations
 
     argument :id, Int, required: true
     argument :email, String, required: false
+    argument :cellphone_number, String, required: false
     argument :password, String, required: false
     argument :password_confirmation, String, required: false
     argument :name, String, required: false
@@ -21,6 +22,7 @@ module Mutations
       if input[:email] || input[:password]
         input[:auth_attributes] = { id: auth.id }
         input[:auth_attributes][:email] = input.delete(:email) if input[:email]
+        input[:auth_attributes][:cellphone_number] = input.delete(:cellphone_number) if input[:cellphone_number]
         input[:auth_attributes][:password] = input.delete(:password) if input[:password]
         input[:auth_attributes][:password_confirmation] = input.delete(:password_confirmation) if input[:email]
       end

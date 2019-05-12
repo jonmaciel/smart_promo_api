@@ -55,7 +55,7 @@ RSpec.describe SmartPromoApiSchema do
 
     context "when the user is invalid" do
       let(:other_costumer) { create(:customer, name: 'Other Name', cpf: '07712973947') }
-      let(:other_auth) { create(:auth, email: 'other@other.com', password: '1234', password_confirmation: '1234', source: customer) }
+      let(:other_auth) { create(:auth, cellphone_number: '41992855074', email: 'other@other.com', password: '1234', password_confirmation: '1234', source: customer) }
       let!(:id) { other_auth.id }
 
       it 'creates its auth' do

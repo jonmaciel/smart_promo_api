@@ -5,7 +5,7 @@ module Mutations
     description 'Create new customer'
 
     argument :email, String, required: false
-    argument :cellphone_number, String, required: false
+    argument :cellphone_number, String, required: true
     argument :name, String, required: true
     argument :cpf, String, required: true
     argument :password, String, required: true

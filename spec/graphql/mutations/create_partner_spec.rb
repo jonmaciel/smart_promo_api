@@ -20,11 +20,13 @@ RSpec.describe SmartPromoApiSchema do
     let(:name) { 'Name' }
     let(:adress) { 'Adress' }
     let(:cnpj) { '71343766000117' }
+    let(:cellphone_number) { '41992855073' }
     let(:email) { 'test@mail.com' }
     let(:password) { '123123123' }
     let(:variables) do
       {
         name: name,
+        cellphoneNumber: cellphone_number,
         adress: adress,
         cnpj: cnpj,
         email: email,
@@ -34,13 +36,15 @@ RSpec.describe SmartPromoApiSchema do
     end
     let(:mutation_string) { 
       %| 
-        mutation createPartner($name: String!, $adress: String!, $cnpj: String!, $email: String!, $password: String!, $passwordConfirmation: String!){
-          createPartner(name: $name, adress: $adress, cnpj: $cnpj, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
+        mutation createPartner($name: String!, $adress: String!, $cellphoneNumber: String!, $cnpj: String!, $email: String!, $password: String!, $passwordConfirmation: String!){
+          createPartner(name: $name, adress: $adress, cnpj: $cnpj, email: $email, cellphoneNumber: $cellphoneNumber, password: $password, passwordConfirmation: $passwordConfirmation) {
             partner {
               id
               name
               adress
               cnpj
+              email
+              cellphoneNumber
             }
             errors
           }
@@ -91,6 +95,8 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_partner['name']).to eq name
         expect(returned_partner['adress']).to eq adress
         expect(returned_partner['cnpj']).to eq cnpj
+        expect(returned_partner['cellphoneNumber']).to eq cellphone_number
+        expect(returned_partner['email']).to eq email
         expect(newest_auth.email).to eq email
         expect(newest_wallet.code).to eq 'miliseconds'
       end
