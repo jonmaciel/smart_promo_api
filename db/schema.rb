@@ -67,15 +67,15 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.index ["partner_id"], name: "index_fidelities_on_partner_id"
   end
 
-  create_table "founds", force: :cascade do |t|
+  create_table "funds", force: :cascade do |t|
     t.float "value"
     t.integer "status"
     t.bigint "sender_wallet_id"
     t.bigint "recipient_owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["recipient_owner_id"], name: "index_founds_on_recipient_owner_id"
-    t.index ["sender_wallet_id"], name: "index_founds_on_sender_wallet_id"
+    t.index ["recipient_owner_id"], name: "index_funds_on_recipient_owner_id"
+    t.index ["sender_wallet_id"], name: "index_funds_on_sender_wallet_id"
   end
 
   create_table "partner_profiles", force: :cascade do |t|
@@ -145,8 +145,8 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
 
   add_foreign_key "challenge_progresses", "challenges"
   add_foreign_key "challenge_progresses", "customers"
-  add_foreign_key "founds", "wallets", column: "recipient_owner_id"
-  add_foreign_key "founds", "wallets", column: "sender_wallet_id"
+  add_foreign_key "funds", "wallets", column: "recipient_owner_id"
+  add_foreign_key "funds", "wallets", column: "sender_wallet_id"
   add_foreign_key "phones", "partners"
   add_foreign_key "promotions", "partners"
 end
