@@ -13,6 +13,12 @@ module Types
       argument :partner_id, Int, 'Partner ID', required: true
     end
 
+    field :customer, CustomerType, null: true do
+      argument :id, Int, 'Costumer ID', required: true
+    end
+
+    field :customers, [CustomerType], null: true
+
     def partner(args)
       Partner.find_by(id: args[:id])
     end
@@ -24,6 +30,14 @@ module Types
     def promotions(args)
       partner = Partner.find_by(id: args[:partner_id])
       partner&.promotions || []
+    end
+
+    def customer(args)
+      Customer.find_by(id: args[:id])
+    end
+
+    def customers
+      Customer.all
     end
   end
 end

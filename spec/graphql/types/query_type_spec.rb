@@ -102,4 +102,43 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
   end
+
+  describe 'Customer' do
+    let(:query_string) { %| query customer($id: Int!) { customer(id: $id) { name } } | }
+    let(:customer) { create(:customer, name: 'Name 1', cpf: '07712973946') }
+    let(:variables) { { id: customer.id } }
+
+    context 'when the customer has been found' do
+      it 'returns the righ customer' do
+        costumer_name = result['data']['customer']['name']
+        expect(costumer_name).to eq 'Name 1'
+      end
+    end
+
+    context 'when the customer has not been found' do
+      let(:variables) { { id: -1 } }
+
+      it 'returns the righ customer' do
+        expect(result['data']['customer']).to be_nil
+      end
+    end
+  end
+
+  describe 'Customers' do
+    let(:query_string) { %| query customers { customers { name } } | }
+
+    before do
+      create(:customer, name: 'Name 1', cpf: '07712973946')
+      create(:customer, name: 'Name 2', cpf: '07712973947')
+    end
+
+    context 'when the customers have been found' do
+      it 'returns all customers ' do
+        first_user_name = result['data']['customers'][0]['name']
+        second_user_name = result['data']['customers'][1]['name']
+        expect(first_user_name).to eq 'Name 1'
+        expect(second_user_name).to eq 'Name 2'
+      end
+    end
+  end
 end
