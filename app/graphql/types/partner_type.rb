@@ -11,5 +11,6 @@ module Types
     field :longitude, String, null: true
     field :cellphone_number, String, null: true, resolve: -> (obj, _, _) { obj.auth.cellphone_number }
     field :email, String, null: true, resolve: -> (obj, _, _) { obj.auth.email }
+    field :partner_profile, PartnerProfileType, null: true
   end
 end

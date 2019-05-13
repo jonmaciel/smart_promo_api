@@ -6,7 +6,8 @@ describe Types::PartnerType do
     it { is_expected.to be_of_type 'Int' }
   end
 
-  describe 'name' do subject { described_class.fields['name'].to_graphql }
+  describe 'name' do
+    subject { described_class.fields['name'].to_graphql }
     it { is_expected.to be_of_type 'String' }
   end
 
@@ -30,7 +31,17 @@ describe Types::PartnerType do
     it { is_expected.to be_of_type 'String' }
   end
 
-  xdescribe 'partner_profile' do
+  describe 'cellphone_number' do
+    subject { described_class.fields['cellphoneNumber'].to_graphql }
+    it { is_expected.to be_of_type 'String' }
+  end
+
+  describe 'email' do
+    subject { described_class.fields['email'].to_graphql }
+    it { is_expected.to be_of_type 'String' }
+  end
+
+  describe 'partner_profile' do
     subject { described_class.fields['partnerProfile'].to_graphql }
     it { is_expected.to be_of_type 'PartnerProfile' }
   end
