@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SmartPromoApiSchema do
   let(:context_partner) { create(:partner, name: 'Name', adress: 'Adress', cnpj: '18210092000108') }
+  let(:promotion_type) { promotion_types(:club) }
   let(:partner) { context_partner }
   let(:context) { { current_user: context_partner } }
   let(:variables) { {} }
@@ -19,7 +20,7 @@ RSpec.describe SmartPromoApiSchema do
   end
 
   describe 'Delete Partner' do
-    let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner) }
+    let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner, promotion_type: promotion_type) }
     let(:id) { promotion.id }
     let(:mutation_result_success) { result['data']['deletePromotion']['success'] }
     let(:mutation_result_errors) { result['data']['deletePromotion']['errors'] }

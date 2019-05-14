@@ -20,36 +20,36 @@ RSpec.describe SmartPromoApiSchema do
   describe 'Create Partner' do
     let(:name) { 'Name' }
     let(:description) { 'Description' }
-    let(:kind) { 1 }
     let(:start_datetime) { '2017-01-01' }
     let(:end_datetime) { '2017-01-02' }
+    let(:promotion_type_id) { promotion_types(:club).id }
     let(:highlighted) { false }
     let(:active) { true }
     let(:variables) do
       {
         name: name,
         description: description,
-        kind: kind,
         startDatetime: start_datetime,
         endDatetime: end_datetime, 
         highlighted: highlighted,
+        promotionTypeId: promotion_type_id,
         active: active,
         highlighted: highlighted
       }
     end
     let(:mutation_string) { 
       %| 
-        mutation createPromotion($name: String!, $description: String!, $kind: Int!, $startDatetime: String!, $endDatetime: String!, $highlighted: Boolean, $active: Boolean) {
-          createPromotion(name: $name, description: $description, kind: $kind, startDatetime: $startDatetime, endDatetime: $endDatetime, highlighted: $highlighted, active: $active) {
+        mutation createPromotion($name: String!, $promotionTypeId: Int!, $description: String!, $startDatetime: String!, $endDatetime: String!, $highlighted: Boolean, $active: Boolean) {
+          createPromotion(name: $name, promotionTypeId: $promotionTypeId, description: $description, startDatetime: $startDatetime, endDatetime: $endDatetime, highlighted: $highlighted, active: $active) {
             promotion {
               id
               name
               description
-              kind
               startDatetime
               endDatetime 
               active
               highlighted
+              type
             }
             errors
           }
@@ -78,11 +78,11 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_promotion['id']).to eq newest_promotion.id
         expect(returned_promotion['name']).to eq name
         expect(returned_promotion['description']).to eq description
-        expect(returned_promotion['kind']).to eq kind.to_s
         expect(returned_promotion['startDatetime']).to eq '2017-01-01 00:00:00 UTC'
         expect(returned_promotion['endDatetime']).to eq '2017-01-02 00:00:00 UTC'
         expect(returned_promotion['active']).to eq active 
         expect(returned_promotion['highlighted']).to eq highlighted
+        expect(returned_promotion['type']).to eq promotion_types(:club).label
       end
     end
 

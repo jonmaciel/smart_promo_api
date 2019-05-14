@@ -1,8 +1,19 @@
 require 'faker'
 
-5.times do
+promotion_type_fidelity = PromotionType.create!(label: 'Programa de Fidelidade')
+promotion_type_club = PromotionType.create!(label: 'Clube de Benefícios')
+
+2.times do
   Promotion.create(
-    name: Faker::Lorem.word
+    name: Faker::Lorem.word,
+    promotion_type: promotion_type_fidelity
+  )
+end
+
+2.times do
+  Promotion.create(
+    name: Faker::Lorem.word,
+    promotion_type: promotion_type_club
   )
 end
 
@@ -16,11 +27,24 @@ partner = Partner.create(
   longitude: '-49.254225'
 )
 
+2.times do
+  Ticket.create(
+    partner: partner,
+    promotion_type: promotion_type_fidelity
+  )
+end
+
+2.times do
+  Promotion.create(
+    partner: partner,
+    promotion_type: promotion_type_club
+  )
+end
+
 user = Auth.create!(
   email: 'joaomaciel.n@mail.com',
-  password: '123123123',
-  password_confirmation: '123123123',
+  cellphone_number: '41992855073',
+  password: '1234',
+  password_confirmation: '1234',
   source: partner
 )
-
-

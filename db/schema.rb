@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_01_000922) do
+ActiveRecord::Schema.define(version: 2019_05_14_000826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,28 +107,39 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.index ["partner_id"], name: "index_phones_on_partner_id"
   end
 
+  create_table "promotion_types", force: :cascade do |t|
+    t.string "label", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "promotions", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.integer "kind"
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.boolean "highlighted"
     t.float "index"
     t.boolean "active"
     t.bigint "partner_id"
+    t.bigint "promotion_type_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["partner_id"], name: "index_promotions_on_partner_id"
+    t.index ["promotion_type_id"], name: "index_promotions_on_promotion_type_id"
   end
 
   create_table "tickets", force: :cascade do |t|
-    t.integer "type"
-    t.bigint "promotion_id"
+    t.integer "value"
+    t.bigint "partner_id", null: false
+    t.bigint "promotion_type_id", null: false
     t.bigint "wallet_id"
+    t.bigint "promotion_contempled_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["promotion_id"], name: "index_tickets_on_promotion_id"
+    t.index ["partner_id"], name: "index_tickets_on_partner_id"
+    t.index ["promotion_contempled_id"], name: "index_tickets_on_promotion_contempled_id"
+    t.index ["promotion_type_id"], name: "index_tickets_on_promotion_type_id"
     t.index ["wallet_id"], name: "index_tickets_on_wallet_id"
   end
 
@@ -148,4 +159,5 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
   add_foreign_key "funds", "wallets", column: "sender_wallet_id"
   add_foreign_key "phones", "partners"
   add_foreign_key "promotions", "partners"
+  add_foreign_key "tickets", "promotions", column: "promotion_contempled_id"
 end

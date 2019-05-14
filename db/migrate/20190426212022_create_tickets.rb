@@ -1,9 +1,13 @@
 class CreateTickets < ActiveRecord::Migration[5.2]
   def change
     create_table :tickets do |t|
-      t.integer :type
-      t.references :promotion
-      t.references :wallet
+      t.integer :value, defalt: 1
+
+      t.belongs_to :partner,        index: true, null: false
+      t.belongs_to :promotion_type, index: true, null: false
+
+      t.belongs_to :wallet,               index: true, null: true
+      t.belongs_to :promotion_contempled, index: true, null: true, foreign_key: { to_table: :promotions }
 
       t.timestamps
     end

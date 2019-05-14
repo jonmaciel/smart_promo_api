@@ -42,7 +42,7 @@ RSpec.describe SmartPromoApiSchema do
 
   describe 'Promotion' do
     let(:partner) { create(:partner, name: 'Abc', cnpj: '71343766000117', adress: 'test') }
-    let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner) }
+    let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner, promotion_type: promotion_types(:club)) }
     let(:query_string) {
       %|
         query promotion($id: Int!, $partnerId: Int!) { promotion(id: $id, partnerId: $partnerId) { name } }
@@ -59,7 +59,7 @@ RSpec.describe SmartPromoApiSchema do
 
     context 'when the partner has not been found' do
       let(:other_partner) { create(:partner, name: 'Abc', cnpj: '71343766000118', adress: 'test') }
-      let(:id) { create(:promotion, name: 'Name', description: 'Description', partner: other_partner).id }
+      let(:id) { create(:promotion, name: 'Name', description: 'Description', partner: other_partner, promotion_type: promotion_types(:club)).id }
 
       it 'is nil' do
         expect(result['data']['promotion']).to be_nil
@@ -81,8 +81,8 @@ RSpec.describe SmartPromoApiSchema do
     let(:query_string) { %| query promotions($partnerId: Int!) { promotions(partnerId: $partnerId) { name } } | }
 
     before do
-      create(:promotion, name: 'Name', description: 'Description', partner: partner)
-      create(:promotion, name: 'Name 2', description: 'Description 2', partner: partner)
+      create(:promotion, name: 'Name', description: 'Description', partner: partner, promotion_type: promotion_types(:fidelidade))
+      create(:promotion, name: 'Name 2', description: 'Description 2', partner: partner, promotion_type: promotion_types(:club))
     end
 
     context 'when the promotion has not been found' do

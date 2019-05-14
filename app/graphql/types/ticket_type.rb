@@ -1,18 +1,12 @@
 module Types
-  class PromotionType < Types::BaseObject
+  class TicketType < Types::BaseObject
 
     description 'Promotion Type'
 
     field :id, Int, null: true
-    field :name, String, null: true
-    field :description, String, null: true
-    field :kind, String, null: true
-    field :start_datetime, String, null: true
-    field :end_datetime, String, null: true
-    field :highlighted, Boolean, null: true
-    field :index, Float, null: true
-    field :active, Boolean, null: true
-
-    field :partner, Types::PartnerType, null: true 
+    field :value, Int, null: true
+    field :promotion_contempled, Types::PromotionType, null: true
+    field :partner, Types::PartnerType, null: true
+    field :type, String, null: true, resolve: -> (obj, _, _) { obj.promotion_type.label }
   end
 end

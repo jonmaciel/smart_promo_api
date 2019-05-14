@@ -16,8 +16,8 @@ describe Types::PromotionType do
     it { is_expected.to be_of_type 'String' }
   end
 
-  describe 'kind' do
-    subject { described_class.fields['kind'].to_graphql }
+  describe 'type' do
+    subject { described_class.fields['type'].to_graphql }
     it { is_expected.to be_of_type 'String' }
   end
 

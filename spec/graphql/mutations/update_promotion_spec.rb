@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SmartPromoApiSchema do
   let(:context_partner) { create(:partner, name: 'Name', adress: 'Adress', cnpj: '18210092000108') }
+  let(:promotion_type) { promotion_types(:club) }
   let(:partner) { context_partner }
   let(:context) { { current_user: partner } }
   let(:variables) { {} }
@@ -19,7 +20,7 @@ RSpec.describe SmartPromoApiSchema do
   end
 
   describe 'Update Partner' do
-    let(:promotion) { create(:promotion, name: 'Old Name', description: 'Old description', partner: context_partner) }
+    let(:promotion) { create(:promotion, name: 'Old Name', description: 'Old description', partner: context_partner, promotion_type: promotion_type) }
     let(:name) { 'New Name' }
     let(:description) { 'New Description' }
     let(:id) { promotion.id }
