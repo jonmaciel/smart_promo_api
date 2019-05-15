@@ -9,6 +9,7 @@ module Types
     field :update_partner, mutation: Mutations::UpdatePartner
 
     field :create_tickets, mutation: Mutations::CreateTickets
+    field :give_ticket_to_user, mutation: Mutations::GiveTicketToUser
 
     field :create_promotion, mutation: Mutations::CreatePromotion
     field :update_promotion, mutation: Mutations::UpdatePromotion
