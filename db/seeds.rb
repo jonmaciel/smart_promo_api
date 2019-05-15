@@ -18,10 +18,9 @@ end
 end
 
 lists = Promotion.all
-partner = Partner.create(
+partner = Partner.create!(
   name: 'Maciel',
-  adress: 'test',
-  cnpj: '31.698.135/0001-04',
+  cnpj: '31698135000104',
   adress: 'adress',
   latitude: '-25.375435',
   longitude: '-49.254225'

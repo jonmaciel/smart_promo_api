@@ -10,6 +10,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'graphql', '1.9.4'
 gem 'simple_command'
 gem 'graphql-errors'
+gem 'activerecord-import'
 gem 'rack-cors', :require => 'rack/cors'
 gem 'jwt'
 gem 'bcrypt', '3.1.12'
