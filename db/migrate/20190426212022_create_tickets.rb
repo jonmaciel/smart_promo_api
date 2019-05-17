@@ -7,7 +7,7 @@ class CreateTickets < ActiveRecord::Migration[5.2]
       t.belongs_to :promotion_type, index: true, null: false
 
       t.belongs_to :wallet,               index: true, null: true
-      t.belongs_to :promotion_contempled, index: true, null: true, foreign_key: { to_table: :promotions }
+      t.belongs_to :contempled_promotion, index: true, null: true, foreign_key: { to_table: :promotions }
 
       t.timestamps
     end

@@ -19,7 +19,8 @@ RSpec.describe SmartPromoApiSchema do
   describe 'Update Partner' do
     let!(:auth) { create(:auth, email: 'p@mail.com', cellphone_number: partner_cellphone_number, password: '123456', password_confirmation: '123456', source: partner) }
     let(:partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '18210092000108') }
-    let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_types(:club)) }
+    let(:promotion_type) { promotion_types(:club) }
+    let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_type) }
     let(:customer) { create(:customer, name: 'Customer', cpf: '07712973946') }
     let!(:auth_costumer) { create(:auth, email: 'c@mail.com', cellphone_number: customer_cellphone_number,  password: '123456', password_confirmation: '123456', source: customer) }
     let(:customer_id) { customer.id }
@@ -35,8 +36,8 @@ RSpec.describe SmartPromoApiSchema do
     end
     let(:mutation_string) { 
       %| 
-        mutation ($ticketId: Int!, $cellphoneNumber: String!) {
-          giveTicketToUser(ticketId: $ticketId, cellphoneNumber: $cellphoneNumber) {
+        mutation ($ticketId: Int!, $cellphoneNumber: String!, $promotionId: Int) {
+          giveTicketToUser(ticketId: $ticketId, cellphoneNumber: $cellphoneNumber, promotionId: $promotionId) {
             success
             errors
           }
@@ -56,9 +57,39 @@ RSpec.describe SmartPromoApiSchema do
       create(:wallet, source: customer)
     end
 
-    context 'moving ticket to wallet' do
-      it 'just move the ticket' do
-        expect { result }.to change { customer.wallet.tickets.count }.by(1)
+    describe 'moving ticket to wallet' do
+      describe 'it is not a loyalty card' do
+        it 'just move the ticket' do
+          expect { result }.to change { customer.wallet.tickets.count }.by(1)
+        end
+      end
+
+      describe 'loyalty card' do
+        let(:promotion) { create(:promotion, name: 'Old Name', description: 'Old description', partner: partner, promotion_type: promotion_type) }
+        let(:promotion_id) { promotion.id }
+        let(:variables) do
+          {
+            cellphoneNumber: customer_cellphone_number,
+            promotionId: promotion_id,
+            ticketId: ticket_id
+          }
+        end
+
+        context 'when promotion exists' do
+          it 'crete ticket and move to promotion' do
+            expect { result }.to change { promotion.reload.tickets.count }.by(1)
+            expect(ticket.reload.contempled_promotion).to eq promotion
+          end
+        end
+
+        context 'when promotion is sent and does not exist' do
+          let(:promotion_id) { -1 }
+
+          it 'crete ticket and move to promotion' do
+            expect { result }.to change { promotion.reload.tickets.count }.by(0)
+            expect(returned_errors).to eq "Couldn't find Promotion with 'id'=-1"
+          end
+        end
       end
 
       describe 'loyalty' do
@@ -68,7 +99,6 @@ RSpec.describe SmartPromoApiSchema do
             expect { result }.to change { Loyalty.count }.by(1)
           end
         end
-
 
         context 'when it already has loyalty' do
           before do
@@ -83,50 +113,52 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
 
-    context 'when the user is not a partner' do
-      let(:variables) do
-        {
-          cellphoneNumber: partner_cellphone_number,
-          ticketId: ticket_id
-        }
+    describe 'error handling' do
+      context 'when the user is not a partner' do
+        let(:variables) do
+          {
+            cellphoneNumber: partner_cellphone_number,
+            ticketId: ticket_id
+          }
+        end
+
+        it 'just returns error' do
+          expect(returned_success).to be_falsey
+          expect(returned_errors).to eq 'invalid user'
+        end
       end
 
-      it 'just returns error' do
-        expect(returned_success).to be_falsey
-        expect(returned_errors).to eq 'invalid user'
+      context 'when custumer has been not found' do
+        let(:variables) do
+          {
+            cellphoneNumber: '41988341100',
+            ticketId: ticket_id
+          }
+        end
+
+        it 'just returns error' do
+          expect(returned_success).to be_falsey
+          expect(returned_errors).to eq "Couldn't find Auth"
+        end
       end
-    end
 
-    context 'when custumer has been not found' do
-      let(:variables) do
-        {
-          cellphoneNumber: '41988341100',
-          ticketId: ticket_id
-        }
+      context 'when custumer is not a customer' do
+        let(:customer) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000109') }
+
+        it 'just returns error' do
+          expect(returned_success).to be_falsey
+          expect(returned_errors).to eq 'invalid user'
+        end
       end
 
-      it 'just returns error' do
-        expect(returned_success).to be_falsey
-        expect(returned_errors).to eq "Couldn't find Auth"
-      end
-    end
+      context 'when ticket does not belong to customer' do
+        let(:second_partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000108') }
+        let(:ticket) { create(:ticket, partner: second_partner, promotion_type: promotion_types(:club)) }
 
-    context 'when custumer is not a customer' do
-      let(:customer) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000109') }
-
-      it 'just returns error' do
-        expect(returned_success).to be_falsey
-        expect(returned_errors).to eq 'invalid user'
-      end
-    end
-
-    context 'when ticket does not belong to customer' do
-      let(:second_partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000108') }
-      let(:ticket) { create(:ticket, partner: second_partner, promotion_type: promotion_types(:club)) }
-
-      it 'just returns error' do
-        expect(returned_success).to be_falsey
-        expect(returned_errors).to eq 'invalid user'
+        it 'just returns error' do
+          expect(returned_success).to be_falsey
+          expect(returned_errors).to eq 'invalid ticket'
+        end
       end
     end
   end

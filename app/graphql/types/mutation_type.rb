@@ -10,6 +10,7 @@ module Types
 
     field :create_tickets, mutation: Mutations::CreateTickets
     field :give_ticket_to_user, mutation: Mutations::GiveTicketToUser
+    field :contemplate_ticket, mutation: Mutations::ContemplateTicket
 
     field :create_promotion, mutation: Mutations::CreatePromotion
     field :update_promotion, mutation: Mutations::UpdatePromotion

@@ -135,11 +135,11 @@ ActiveRecord::Schema.define(version: 2019_05_14_000826) do
     t.bigint "partner_id", null: false
     t.bigint "promotion_type_id", null: false
     t.bigint "wallet_id"
-    t.bigint "promotion_contempled_id"
+    t.bigint "contempled_promotion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["contempled_promotion_id"], name: "index_tickets_on_contempled_promotion_id"
     t.index ["partner_id"], name: "index_tickets_on_partner_id"
-    t.index ["promotion_contempled_id"], name: "index_tickets_on_promotion_contempled_id"
     t.index ["promotion_type_id"], name: "index_tickets_on_promotion_type_id"
     t.index ["wallet_id"], name: "index_tickets_on_wallet_id"
   end
@@ -160,5 +160,5 @@ ActiveRecord::Schema.define(version: 2019_05_14_000826) do
   add_foreign_key "funds", "wallets", column: "sender_wallet_id"
   add_foreign_key "phones", "partners"
   add_foreign_key "promotions", "partners"
-  add_foreign_key "tickets", "promotions", column: "promotion_contempled_id"
+  add_foreign_key "tickets", "promotions", column: "contempled_promotion_id"
 end
