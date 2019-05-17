@@ -54,18 +54,6 @@ ActiveRecord::Schema.define(version: 2019_05_14_000826) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fidelities", force: :cascade do |t|
-    t.integer "type"
-    t.integer "notification"
-    t.boolean "active"
-    t.bigint "customer_id"
-    t.bigint "partner_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customer_id"], name: "index_fidelities_on_customer_id"
-    t.index ["partner_id"], name: "index_fidelities_on_partner_id"
-  end
-
   create_table "funds", force: :cascade do |t|
     t.float "value"
     t.integer "status"
@@ -75,6 +63,19 @@ ActiveRecord::Schema.define(version: 2019_05_14_000826) do
     t.datetime "updated_at", null: false
     t.index ["recipient_owner_id"], name: "index_funds_on_recipient_owner_id"
     t.index ["sender_wallet_id"], name: "index_funds_on_sender_wallet_id"
+  end
+
+  create_table "loyalties", force: :cascade do |t|
+    t.integer "type"
+    t.boolean "active", default: true
+    t.boolean "notification", default: true
+    t.bigint "customer_id"
+    t.bigint "partner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id", "partner_id"], name: "index_loyalties_on_customer_id_and_partner_id"
+    t.index ["customer_id"], name: "index_loyalties_on_customer_id"
+    t.index ["partner_id"], name: "index_loyalties_on_partner_id"
   end
 
   create_table "partner_profiles", force: :cascade do |t|

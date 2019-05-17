@@ -1,2 +1,0 @@
-class Fidelity < ApplicationRecord
-end

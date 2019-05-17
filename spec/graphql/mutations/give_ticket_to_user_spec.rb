@@ -60,6 +60,27 @@ RSpec.describe SmartPromoApiSchema do
       it 'just move the ticket' do
         expect { result }.to change { customer.wallet.tickets.count }.by(1)
       end
+
+      describe 'loyalty' do
+        context 'when it does not have loyalty' do
+          it 'creates loyalty' do
+            expect(Loyalty).to receive(:create).with(customer: customer, partner: partner).and_call_original
+            expect { result }.to change { Loyalty.count }.by(1)
+          end
+        end
+
+
+        context 'when it already has loyalty' do
+          before do
+            Loyalty.create(customer: customer, partner: partner)
+          end
+
+          it 'does not creates loyalty' do
+            expect(Loyalty).to_not receive(:create).and_call_original
+            expect { result }.to change { Loyalty.count }.by(0)
+          end
+        end
+      end
     end
 
     context 'when the user is not a partner' do

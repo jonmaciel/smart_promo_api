@@ -20,6 +20,10 @@ module Mutations
         return { success: false, errors: 'invalid user' }
       end
 
+      if Loyalty.find_by(customer: customer, partner: partner).nil?
+        Loyalty.create(customer: customer, partner: partner)
+      end
+
       ticket.wallet = customer.wallet
       ticket.save!
 
