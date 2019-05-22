@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Types::TicketType do
+describe Types::Tickets::TicketType do
   describe 'id' do
     subject { described_class.fields['id'].to_graphql }
     it { is_expected.to be_of_type 'Int' }

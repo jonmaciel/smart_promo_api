@@ -1,23 +1,23 @@
 module Types
   class QueryType < Types::BaseObject
-    field :partner, PartnerType, null: true do
+    field :partner, Types::Partners::PartnerType, null: true do
       argument :id, Int, 'Partner ID', required: true
     end
 
-    field :promotion, PromotionType, null: true do
+    field :promotion, Types::Promotions::PromotionType, null: true do
       argument :id, Int, 'Promotion ID', required: true
       argument :partner_id, Int, 'Partner ID', required: true
     end
 
-    field :promotions, [PromotionType], null: true do
+    field :promotions, [Types::Promotions::PromotionType], null: true do
       argument :partner_id, Int, 'Partner ID', required: true
     end
 
-    field :customer, CustomerType, null: true do
+    field :customer, Types::Customers::CustomerType, null: true do
       argument :id, Int, 'Costumer ID', required: true
     end
 
-    field :customers, [CustomerType], null: true
+    field :customers, [Types::Customers::CustomerType], null: true
 
     def partner(args)
       Partner.find_by(id: args[:id])
