@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Promotions
-    class UpdatePromotion < Mutations::BaseMutation 
+    class UpdatePromotion < Mutations::BaseMutation
       graphql_name 'UpdatePromotion'
       null true
       description 'Update promotion'
@@ -21,7 +23,6 @@ module Mutations
       def resolve(input)
         partner = context[:current_user]
         return { promotion: nil, errors: 'Invalid user' } unless partner.is_a?(Partner)
-
 
         promotion = Promotion.find(input[:id])
 

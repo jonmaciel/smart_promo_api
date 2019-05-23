@@ -28,11 +28,11 @@ RSpec.describe SmartPromoApiSchema do
         id: id,
         name: name,
         cpf: cpf,
-        email: email 
+        email: email
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation updateCustomer($id: Int!, $name: String, $cpf: String, $email: String, $password: String, $passwordConfirmation: String){
           updateCustomer(id: $id, name: $name, cpf: $cpf, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
             customer {
@@ -42,17 +42,17 @@ RSpec.describe SmartPromoApiSchema do
             }
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
-    let(:returned_customer) do 
+    let(:returned_customer) do
       result['data']['updateCustomer']['customer']
-    end 
+    end
 
-    let(:returned_errors) do 
+    let(:returned_errors) do
       result['data']['updateCustomer']['errors']
-    end 
+    end
 
     let(:reloaded_customer) do
       Customer.find(returned_customer['id'])

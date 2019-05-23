@@ -30,15 +30,14 @@ RSpec.describe SmartPromoApiSchema do
         name: name,
         description: description,
         startDatetime: start_datetime,
-        endDatetime: end_datetime, 
-        highlighted: highlighted,
+        endDatetime: end_datetime,
         promotionTypeId: promotion_type_id,
         active: active,
         highlighted: highlighted
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation createPromotion($name: String!, $promotionTypeId: Int!, $description: String!, $startDatetime: String!, $endDatetime: String!, $highlighted: Boolean, $active: Boolean) {
           createPromotion(name: $name, promotionTypeId: $promotionTypeId, description: $description, startDatetime: $startDatetime, endDatetime: $endDatetime, highlighted: $highlighted, active: $active) {
             promotion {
@@ -46,16 +45,16 @@ RSpec.describe SmartPromoApiSchema do
               name
               description
               startDatetime
-              endDatetime 
+              endDatetime
               active
               highlighted
               type
             }
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
     let(:returned_promotion) do
       result['data']['createPromotion']['promotion']
     end
@@ -80,7 +79,7 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_promotion['description']).to eq description
         expect(returned_promotion['startDatetime']).to eq '2017-01-01 00:00:00 UTC'
         expect(returned_promotion['endDatetime']).to eq '2017-01-02 00:00:00 UTC'
-        expect(returned_promotion['active']).to eq active 
+        expect(returned_promotion['active']).to eq active
         expect(returned_promotion['highlighted']).to eq highlighted
         expect(returned_promotion['type']).to eq promotion_types(:club).label
       end

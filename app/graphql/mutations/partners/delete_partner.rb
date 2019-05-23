@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Partners
-    class DeletePartner < Mutations::BaseMutation 
+    class DeletePartner < Mutations::BaseMutation
       graphql_name 'DeletePartner'
       null true
       description 'Update new partner'

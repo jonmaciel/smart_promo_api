@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Promotions
-    class DeletePromotion < Mutations::BaseMutation 
+    class DeletePromotion < Mutations::BaseMutation
       graphql_name 'DeletePromotion'
       null true
       description 'Update new partner'

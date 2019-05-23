@@ -23,16 +23,16 @@ RSpec.describe SmartPromoApiSchema do
     let(:variables) do
       { id: id }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation deletePartner($id: Int!){
           deletePartner(id: $id) {
             success
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
     context "when the partner has been found" do
       it 'returns the righ partner' do

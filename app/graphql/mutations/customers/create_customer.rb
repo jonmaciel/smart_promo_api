@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Customers
-    class CreateCustomer < Mutations::BaseMutation 
+    class CreateCustomer < Mutations::BaseMutation
       null true
       description 'Create new customer'
 
@@ -22,7 +24,7 @@ module Mutations
             cellphone_number: input[:cellphone_number],
             email: input[:email],
             password: input[:password],
-            password_confirmation: input[:password_confirmation],
+            password_confirmation: input[:password_confirmation]
           },
           wallet_attributes: {
             code: DateTime.now.strftime('%Q')

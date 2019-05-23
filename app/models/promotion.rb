@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Promotion < ApplicationRecord
   belongs_to :promotion_type
   belongs_to :partner, dependent: :destroy

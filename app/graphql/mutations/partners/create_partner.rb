@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Partners
-    class CreatePartner < Mutations::BaseMutation 
+    class CreatePartner < Mutations::BaseMutation
       graphql_name 'CreatePartner'
       null true
       description 'Create new partner'
@@ -29,7 +31,7 @@ module Mutations
             cellphone_number: input[:cellphone_number],
             email: input[:email],
             password: input[:password],
-            password_confirmation: input[:password_confirmation],
+            password_confirmation: input[:password_confirmation]
           },
           wallet_attributes: {
             code: DateTime.now.strftime('%Q')

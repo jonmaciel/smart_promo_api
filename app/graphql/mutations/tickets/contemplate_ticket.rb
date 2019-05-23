@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
-  module Tickets 
-    class ContemplateTicket < Mutations::BaseMutation 
+  module Tickets
+    class ContemplateTicket < Mutations::BaseMutation
       attr_accessor :ticket_id, :promotion_id
 
       null true
@@ -42,11 +44,8 @@ module Mutations
 
       def validate!
         raise(GraphQL::ExecutionError, 'invalid promotion type') if promotion.promotion_type != ticket.promotion_type
-        if !customer.is_a?(Customer) || ticket.partner != promotion.partner || ticket&.wallet != customer.wallet
-          raise(GraphQL::ExecutionError, 'invalid user')
-        end
+        raise(GraphQL::ExecutionError, 'invalid user') if !customer.is_a?(Customer) || ticket.partner != promotion.partner || ticket&.wallet != customer.wallet
       end
     end
   end
 end
-

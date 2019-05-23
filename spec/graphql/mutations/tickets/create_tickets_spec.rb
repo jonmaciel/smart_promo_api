@@ -30,24 +30,24 @@ RSpec.describe SmartPromoApiSchema do
         quantity: quantity
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation ($promotionTypeId: Int!, $quantity: Int!) {
           createTickets(promotionTypeId: $promotionTypeId, quantity: $quantity) {
             success
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
-    let(:returned_success) do 
+    let(:returned_success) do
       result['data']['createTickets']['success']
-    end 
+    end
 
-    let(:returned_errors) do 
+    let(:returned_errors) do
       result['data']['createTickets']['errors']
-    end 
+    end
 
     context "creating 10 tickets" do
       it 'just creat the tickets' do

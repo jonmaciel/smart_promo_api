@@ -30,11 +30,11 @@ RSpec.describe SmartPromoApiSchema do
         name: name,
         adress: adress,
         cnpj: cnpj,
-        email: email 
+        email: email
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation updatePartner($id: Int!, $name: String, $adress: String, $cnpj: String, $email: String, $password: String, $passwordConfirmation: String){
           updatePartner(id: $id, name: $name, adress: $adress, cnpj: $cnpj, email: $email, password: $password, passwordConfirmation: $passwordConfirmation) {
             partner {
@@ -45,17 +45,17 @@ RSpec.describe SmartPromoApiSchema do
             }
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
-    let(:returned_partner) do 
+    let(:returned_partner) do
       result['data']['updatePartner']['partner']
-    end 
+    end
 
-    let(:returned_errors) do 
+    let(:returned_errors) do
       result['data']['updatePartner']['errors']
-    end 
+    end
 
     let(:reloaded_partner) do
       Partner.find(returned_partner['id'])

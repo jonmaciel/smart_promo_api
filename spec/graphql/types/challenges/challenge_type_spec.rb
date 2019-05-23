@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Types::Challenges::ChallengeType do
@@ -6,7 +8,8 @@ describe Types::Challenges::ChallengeType do
     it { is_expected.to be_of_type 'Int' }
   end
 
-  describe 'name' do subject { described_class.fields['name'].to_graphql }
+  describe 'name' do
+    subject { described_class.fields['name'].to_graphql }
     it { is_expected.to be_of_type 'String' }
   end
 

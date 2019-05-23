@@ -43,17 +43,17 @@ RSpec.describe SmartPromoApiSchema do
   describe 'Promotion' do
     let(:partner) { create(:partner, name: 'Abc', cnpj: '71343766000117', adress: 'test') }
     let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner, promotion_type: promotion_types(:club)) }
-    let(:query_string) {
+    let(:query_string) do
       %|
         query promotion($id: Int!, $partnerId: Int!) { promotion(id: $id, partnerId: $partnerId) { name } }
       |
-    }
-    let(:variables) {
+    end
+    let(:variables) do
       {
         id: id,
         partnerId: partner_id
       }
-    }
+    end
     let(:id) { promotion.id }
     let(:partner_id) { partner.id }
 
@@ -94,7 +94,7 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
 
-    context 'when the partner has not any promotion'do
+    context 'when the partner has not any promotion' do
       let(:partner_id) { create(:partner, name: 'Abc', cnpj: '71343766000118', adress: 'test').id }
 
       it 'is nil' do
@@ -125,7 +125,7 @@ RSpec.describe SmartPromoApiSchema do
   end
 
   describe 'Customers' do
-    let(:query_string) { %| query customers { customers { name } } | }
+    let(:query_string) { %( query customers { customers { name } } ) }
 
     before do
       create(:customer, name: 'Name 1', cpf: '07712973946')

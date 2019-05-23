@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Partners
-    class UpdatePartner < Mutations::BaseMutation 
+    class UpdatePartner < Mutations::BaseMutation
       graphql_name 'UpdatePartner'
       null true
       description 'Update new partner'
@@ -11,7 +13,7 @@ module Mutations
       argument :password_confirmation, String, required: false
       argument :name, String, required: false
       argument :adress, String, required: false
-      argument :cnpj, String, required: false 
+      argument :cnpj, String, required: false
       argument :latitude, String, required: false
       argument :longitude, String, required: false
 
@@ -31,7 +33,7 @@ module Mutations
 
         input.except!(:id, :email, :password, :password_confirmation)
         partner.update_attributes!(input)
-        
+
         { partner: partner }
       rescue ActiveRecord::RecordNotFound => e
         { success: false, errors: e.to_s }

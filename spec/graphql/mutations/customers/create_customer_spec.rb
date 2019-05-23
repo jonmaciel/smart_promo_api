@@ -28,12 +28,12 @@ RSpec.describe SmartPromoApiSchema do
         cpf: cpf,
         cellphoneNumber: cellphone_number,
         email: email,
-        password: password, 
-        passwordConfirmation: password 
+        password: password,
+        passwordConfirmation: password
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation createCustomer($name: String!, $cpf: String!, $email: String!, $cellphoneNumber: String!, $password: String!, $passwordConfirmation: String!){
           createCustomer(name: $name,  cpf: $cpf, email: $email, password: $password, cellphoneNumber: $cellphoneNumber, passwordConfirmation: $passwordConfirmation) {
             customer {
@@ -44,9 +44,9 @@ RSpec.describe SmartPromoApiSchema do
             }
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
     let(:returned_customer) do
       result['data']['createCustomer']['customer']

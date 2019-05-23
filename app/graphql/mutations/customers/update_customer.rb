@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Customers
-    class UpdateCustomer < Mutations::BaseMutation 
+    class UpdateCustomer < Mutations::BaseMutation
       graphql_name 'UpdateCustomer'
       null true
       description 'Update new customer'
@@ -11,7 +13,7 @@ module Mutations
       argument :password, String, required: false
       argument :password_confirmation, String, required: false
       argument :name, String, required: false
-      argument :cpf, String, required: false 
+      argument :cpf, String, required: false
 
       field :customer, Types::Customers::CustomerType, null: true
       field :errors, String, null: true
@@ -30,7 +32,7 @@ module Mutations
 
         input.except!(:id, :email, :password, :password_confirmation)
         customer.update_attributes!(input)
-        
+
         { customer: customer }
       rescue ActiveRecord::RecordNotFound => e
         { success: false, errors: e.to_s }

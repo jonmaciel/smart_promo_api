@@ -22,7 +22,7 @@ RSpec.describe SmartPromoApiSchema do
     let(:promotion_type) { promotion_types(:club) }
     let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_type) }
     let(:customer) { create(:customer, name: 'Customer', cpf: '07712973946') }
-    let!(:auth_costumer) { create(:auth, email: 'c@mail.com', cellphone_number: customer_cellphone_number,  password: '123456', password_confirmation: '123456', source: customer) }
+    let!(:auth_costumer) { create(:auth, email: 'c@mail.com', cellphone_number: customer_cellphone_number, password: '123456', password_confirmation: '123456', source: customer) }
     let(:customer_id) { customer.id }
     let(:customer_cellphone_number) { '41992855077' }
     let(:partner_cellphone_number) { '41992855078' }
@@ -34,24 +34,24 @@ RSpec.describe SmartPromoApiSchema do
         ticketId: ticket_id
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation ($ticketId: Int!, $cellphoneNumber: String!, $promotionId: Int) {
           giveTicketToUser(ticketId: $ticketId, cellphoneNumber: $cellphoneNumber, promotionId: $promotionId) {
             success
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
-    let(:returned_success) do 
+    let(:returned_success) do
       result['data']['giveTicketToUser']['success']
-    end 
+    end
 
-    let(:returned_errors) do 
+    let(:returned_errors) do
       result['data']['giveTicketToUser']['errors']
-    end 
+    end
 
     before do
       create(:wallet, source: customer)

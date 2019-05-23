@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
-  module Tickets 
-    class CreateTickets < Mutations::BaseMutation 
+  module Tickets
+    class CreateTickets < Mutations::BaseMutation
       graphql_name 'CreateTicket'
       null true
       description 'Create new Ticket'
@@ -20,7 +22,7 @@ module Mutations
 
         tickets = []
 
-        1..quantity.times do
+        (1..quantity).times do
           tickets << Ticket.new(
             promotion_type_id: input[:promotion_type_id],
             partner: partner

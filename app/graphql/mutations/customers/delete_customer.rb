@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Customers
-    class DeleteCustomer < Mutations::BaseMutation 
+    class DeleteCustomer < Mutations::BaseMutation
       graphql_name 'DeleteCustomer'
       null true
       description 'Update new customer'
@@ -15,7 +17,7 @@ module Mutations
         customer = Customer.find(input[:id])
         auth = customer.auth
 
-        return { success: false, errors: 'Invalid user' } if current_auth.adm? || auth != current_auth 
+        return { success: false, errors: 'Invalid user' } if current_auth.adm? || auth != current_auth
 
         customer.destroy!
 

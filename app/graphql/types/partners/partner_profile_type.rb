@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 module Types
   module Partners
     class PartnerProfileType < Types::BaseObject
-
       description 'Partner Business Type'
 
       field :id, Int, null: true

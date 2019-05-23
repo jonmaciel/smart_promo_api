@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthenticateUser
   prepend SimpleCommand
 
@@ -18,6 +20,7 @@ class AuthenticateUser
   def auth_user
     auth = Auth.find_by_login(login)
     return auth if auth&.authenticate(password)
+
     errors.add :user_authentication, 'invalid credentials'
 
     nil

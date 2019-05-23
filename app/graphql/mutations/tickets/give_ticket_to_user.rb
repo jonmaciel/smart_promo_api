@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
-  module Tickets 
-    class GiveTicketToUser < Mutations::BaseMutation 
+  module Tickets
+    class GiveTicketToUser < Mutations::BaseMutation
       attr_accessor :ticket_id, :cellphone_number, :promotion_type_id, :promotion_id
 
       null true
@@ -44,7 +46,7 @@ module Mutations
       end
 
       def promotion
-        @promotion ||= promotion_id ? Promotion.find(promotion_id) :nil
+        @promotion ||= promotion_id ? Promotion.find(promotion_id) : nil
       end
 
       def partner
@@ -53,6 +55,7 @@ module Mutations
 
       def create_loyalty_if_nil!
         return if Loyalty.find_by(customer: customer, partner: partner).present?
+
         Loyalty.create(customer: customer, partner: partner)
       end
 

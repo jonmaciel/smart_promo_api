@@ -1,0 +1,195 @@
+Bundler/OrderedGems:
+  Exclude:
+    - 'Gemfile'
+
+Layout/IndentFirstArrayElement:
+  Exclude:
+
+Layout/CaseIndentation:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/ClosingParenthesisIndentation:
+  Exclude:
+
+Layout/DefEndAlignment:
+  Exclude:
+
+Layout/EmptyLineBetweenDefs:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/EmptyLines:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
+  Exclude:
+
+Layout/EmptyLinesAroundModuleBody:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/EndAlignment:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/ExtraSpacing:
+  Exclude:
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/SpaceBeforeBlockBraces:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Layout/SpaceInsideHashLiteralBraces:
+  Exclude:
+
+Layout/TrailingWhitespace:
+  Exclude:
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'test.ruby'
+
+Lint/AmbiguousOperator:
+  Exclude:
+
+Lint/BooleanSymbol:
+  Exclude:
+
+Lint/HandleExceptions:
+  Exclude:
+
+Lint/ParenthesesAsGroupedExpression:
+  Exclude:
+
+Lint/UselessAssignment:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Metrics/AbcSize:
+  Max: 161
+
+Metrics/BlockLength:
+  Max: 173
+
+Metrics/ClassLength:
+  Max: 352
+
+Metrics/CyclomaticComplexity:
+  Max: 31
+
+Metrics/MethodLength:
+  Max: 99
+
+Metrics/ModuleLength:
+  Max: 200
+
+Metrics/PerceivedComplexity:
+  Max: 31
+
+Naming/AccessorMethodName:
+  Exclude:
+
+Naming/MemoizedInstanceVariableName:
+  Exclude:
+
+Naming/PredicateName:
+  Exclude:
+    - 'spec/**/*'
+
+Naming/UncommunicativeMethodParamName:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+    - 'test.ruby'
+
+Naming/VariableName:
+  Exclude:
+
+Security/Eval:
+  Exclude:
+
+Style/AsciiComments:
+  Exclude:
+
+Style/ClassAndModuleChildren:
+  Exclude:
+
+Style/DateTime:
+  Exclude:
+    - 'test.ruby'
+
+Style/Documentation:
+  Enabled: false
+
+Style/DoubleNegation:
+  Exclude:
+    - 'app/controllers/application_controller.rb'
+
+Style/EmptyMethod:
+  Exclude:
+
+Style/FormatString:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Style/GuardClause:
+  Enabled: false
+
+Style/IdenticalConditionalBranches:
+  Exclude:
+
+Style/IfInsideElse:
+  Exclude:
+
+Style/Lambda:
+  Exclude:
+
+Style/MutableConstant:
+  Exclude:
+
+Style/NumericLiterals:
+  MinDigits: 6
+
+Style/NumericPredicate:
+  Exclude:
+    - 'spec/**/*'
+
+Style/PercentLiteralDelimiters:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/SymbolArray:
+  Exclude:
+
+Style/SymbolProc:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Style/TrailingCommaInArguments:
+  Exclude:
+    - 'spec/forms/revoke_responsible_seller_spec.rb'
+
+Style/UnneededInterpolation:
+  Exclude:
+    - 'app/helpers/application_helper.rb'
+
+Style/WordArray:
+  Exclude:
+
+Metrics/LineLength:
+  Max: 416
+

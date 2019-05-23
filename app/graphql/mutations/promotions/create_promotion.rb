@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Mutations
   module Promotions
-    class CreatePromotion < Mutations::BaseMutation 
+    class CreatePromotion < Mutations::BaseMutation
       graphql_name 'CreatePromotion'
       null true
       description 'Create new promotion'

@@ -22,37 +22,37 @@ RSpec.describe SmartPromoApiSchema do
     let!(:wallet) { create(:wallet, source: customer) }
     let(:partner) { create(:partner, name: 'Name', adress: 'Old Adress', cnpj: '18210092000108') }
     let(:promotion_type) { promotion_types(:club) }
-    let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet ) }
+    let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet) }
     let(:promotion) { create(:promotion, name: 'Name', description: 'Desc', partner: partner, promotion_type: promotion_type) }
     let(:ticket_id) { ticket.id }
     let(:promotion_id) { promotion.id }
-    let(:context) {
+    let(:context) do
       { current_user: auth }
-    }
+    end
     let(:variables) do
       {
         ticketId: ticket_id,
-        promotionId: promotion_id 
+        promotionId: promotion_id
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation ($ticketId: Int!, $promotionId: Int!) {
           contemplateTicket(ticketId: $ticketId, promotionId: $promotionId) {
             success
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
 
-    let(:returned_success) do 
+    let(:returned_success) do
       result['data']['contemplateTicket']['success']
-    end 
+    end
 
-    let(:returned_errors) do 
+    let(:returned_errors) do
       result['data']['contemplateTicket']['errors']
-    end 
+    end
 
     context 'moving ticket to wallet' do
       it 'just move the ticket' do

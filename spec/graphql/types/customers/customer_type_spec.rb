@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Types::Customers::CustomerType do
@@ -26,4 +28,3 @@ describe Types::Customers::CustomerType do
     it { is_expected.to be_of_type 'String' }
   end
 end
-

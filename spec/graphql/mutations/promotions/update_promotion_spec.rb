@@ -31,8 +31,8 @@ RSpec.describe SmartPromoApiSchema do
         description: description
       }
     end
-    let(:mutation_string) { 
-      %| 
+    let(:mutation_string) do
+      %|
         mutation updatePromotion($id: Int!, $name: String, $description: String) {
           updatePromotion(id: $id, name: $name, description: $description) {
             promotion {
@@ -42,9 +42,9 @@ RSpec.describe SmartPromoApiSchema do
             }
             errors
           }
-        } 
-      | 
-    }
+        }
+      |
+    end
     let(:returned_promotion) do
       result['data']['updatePromotion']['promotion']
     end
