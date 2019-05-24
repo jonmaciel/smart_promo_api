@@ -26,19 +26,21 @@ RSpec.describe SmartPromoApiSchema do
     let(:promotion) { create(:promotion, name: 'Name', description: 'Desc', partner: partner, promotion_type: promotion_type) }
     let(:ticket_id) { ticket.id }
     let(:promotion_id) { promotion.id }
+    let(:quantity) { nil }
     let(:context) do
       { current_user: auth }
     end
     let(:variables) do
       {
         ticketId: ticket_id,
-        promotionId: promotion_id
+        promotionId: promotion_id,
+        quantity: quantity
       }
     end
     let(:mutation_string) do
       %|
-        mutation ($ticketId: Int!, $promotionId: Int!) {
-          contemplateTicket(ticketId: $ticketId, promotionId: $promotionId) {
+        mutation ($ticketId: Int, $promotionId: Int!, $quantity: Int) {
+          contemplateTicket(ticketId: $ticketId, promotionId: $promotionId, quantity: $quantity) {
             success
             errors
           }
@@ -60,6 +62,26 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
 
+    context 'moving ticket to wallet' do
+      let(:quantity) { 3 }
+      let(:variables) do
+        {
+          promotionId: promotion_id,
+          quantity: quantity
+        }
+      end
+
+      before do
+        create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet)
+        create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet)
+        create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet)
+      end
+
+      it 'just move the ticket' do
+        expect { result }.to change { promotion.reload.tickets.count }.by(quantity)
+      end
+    end
+
     context 'when the user is not a customer' do
       let(:second_partner) { create(:partner, name: 'Name', adress: 'Old Adress', cnpj: '28210092000109') }
       let!(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: second_partner) }
@@ -71,13 +93,56 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
 
+    context 'when ticket id and quantity are filled' do
+      let(:variables) do
+        {
+          ticketId: ticket_id,
+          promotionId: promotion_id,
+          quantity: 2
+        }
+      end
+
+      it 'just returns error' do
+        expect(returned_success).to be_falsey
+        expect(returned_errors).to eq 'fill just quantity or ticket id'
+      end
+    end
+
+    context 'when the customer have no tickets enough' do
+      let(:variables) do
+        {
+          promotionId: promotion_id,
+          quantity: 2
+        }
+      end
+
+      it 'just returns error' do
+        expect(returned_success).to be_falsey
+        expect(returned_errors).to eq 'You do\'t have tickets enough'
+      end
+    end
+
+    context 'when the quantity is greater than 30' do
+      let(:variables) do
+        {
+          promotionId: promotion_id,
+          quantity: 31
+        }
+      end
+
+      it 'just returns error' do
+        expect(returned_success).to be_falsey
+        expect(returned_errors).to eq '30 is the ticket limit'
+      end
+    end
+
     context 'when ticket does not belong to customer' do
       let(:second_partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000108') }
       let(:ticket) { create(:ticket, partner: second_partner, promotion_type: promotion_types(:club)) }
 
       it 'just returns error' do
         expect(returned_success).to be_falsey
-        expect(returned_errors).to eq 'invalid user'
+        expect(returned_errors).to eq 'invalid ticket'
       end
     end
   end
