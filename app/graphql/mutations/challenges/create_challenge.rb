@@ -8,7 +8,7 @@ module Mutations
 
       argument :name, String, required: false
       argument :goal, Int, required: true
-      argument :kind, Int, required: true
+      argument :promotion_type_id, Int, required: true
 
       field :challenge, Types::Challenges::ChallengeType, null: true
       field :errors, String, null: true
@@ -16,7 +16,7 @@ module Mutations
       def resolve(input)
         @name = input[:name]
         @goal = input[:goal]
-        @kind = input[:kind]
+        @promotion_type_id = input[:promotion_type_id]
 
         validate!
 
@@ -29,10 +29,10 @@ module Mutations
 
       private
 
-      attr_accessor :name, :goal, :kind
+      attr_accessor :name, :goal, :promotion_type_id
 
       def challenge
-        @challenge ||= Challenge.new(name: name, goal: goal, kind: kind)
+        @challenge ||= Challenge.new(name: name, goal: goal, promotion_type_id: promotion_type_id)
       end
 
       def validate!

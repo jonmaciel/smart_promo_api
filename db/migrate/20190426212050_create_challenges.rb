@@ -3,7 +3,7 @@ class CreateChallenges < ActiveRecord::Migration[5.2]
     create_table :challenges do |t|
       t.string :name
       t.integer :goal
-      t.integer :kind
+      t.belongs_to :promotion_type, index: true, null: false
 
       t.timestamps
     end

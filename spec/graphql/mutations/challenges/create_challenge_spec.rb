@@ -19,25 +19,26 @@ RSpec.describe SmartPromoApiSchema do
   describe 'Create Challenge' do
     let(:name) { 'Name' }
     let(:goal) { 20 }
-    let(:kind) { 1 }
+    let(:promotion_type_id) { promotion_types(:club).id }
+    let(:promotion_type_name) { promotion_types(:club).label }
     let(:context_admin) { create(:auth, :adm) }
     let(:context) { { current_user: context_admin } }
     let(:variables) do
       {
         name: name,
         goal: goal,
-        kind: kind
+        promotionTypeId: promotion_type_id
       }
     end
     let(:mutation_string) do
       %|
-        mutation createChallenge($name: String!, $goal: Int!, $kind: Int!) {
-          createChallenge(name: $name, goal: $goal, kind: $kind) {
+        mutation createChallenge($name: String!, $goal: Int!, $promotionTypeId: Int!) {
+          createChallenge(name: $name, goal: $goal, promotionTypeId: $promotionTypeId) {
             challenge {
               id
               name
               goal
-              kind
+              type
             }
             errors
           }
@@ -66,7 +67,7 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_challenge['id']).to eq newest_challenge.id
         expect(returned_challenge['name']).to eq name
         expect(returned_challenge['goal']).to eq goal
-        expect(returned_challenge['kind']).to eq kind
+        expect(returned_challenge['type']).to eq promotion_type_name
       end
     end
 

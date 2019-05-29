@@ -7,7 +7,7 @@ module Types
 
       field :id, Int, null: true
       field :name, String, null: true
-      field :kind, Int, null: true
+      field :type, String, null: true, resolve: ->(obj, _, _) { obj.promotion_type.label }
       field :goal, Int, null: true
     end
   end

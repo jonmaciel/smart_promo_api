@@ -42,6 +42,9 @@ RSpec.describe SmartPromoApiSchema do
         mutation ($ticketId: Int, $promotionId: Int!, $quantity: Int) {
           contemplateTicket(ticketId: $ticketId, promotionId: $promotionId, quantity: $quantity) {
             success
+            completedChallenges {
+              id
+            }
             errors
           }
         }
@@ -52,6 +55,10 @@ RSpec.describe SmartPromoApiSchema do
       result['data']['contemplateTicket']['success']
     end
 
+    let(:returned_completed_challenges) do
+      result['data']['contemplateTicket']['completedChallenges']
+    end
+
     let(:returned_errors) do
       result['data']['contemplateTicket']['errors']
     end
@@ -59,6 +66,63 @@ RSpec.describe SmartPromoApiSchema do
     context 'moving ticket to wallet' do
       it 'just move the ticket' do
         expect { result }.to change { promotion.reload.tickets.count }.by(1)
+      end
+    end
+
+    describe 'incrense pgrogess' do
+      let!(:promotion_1) { create(:challenge, name: 'Promoção semanal', goal: 10, promotion_type: promotion_type) }
+      let!(:promotion_2) { create(:challenge, name: 'Promoção mensal', goal: 10, promotion_type: promotion_type) }
+
+      context 'without progress started' do
+        it 'create progress if does not exist' do
+          expect { result }.to change { ChallengeProgress.count }.by(2)
+        end
+      end
+
+      context 'with progress started' do
+        before do
+          ChallengeProgress.create(challenge: promotion_1, customer: customer)
+        end
+
+        it 'does not create for exitent progress' do
+          expect { result }.to change { ChallengeProgress.count }.by(1)
+        end
+
+        it 'does not create for exitent progress' do
+          expect(returned_completed_challenges).to be_empty
+        end
+      end
+
+      context 'riched goal' do
+        let!(:promotion_1) { create(:challenge, name: 'Primeiro uso', goal: 1, promotion_type: promotion_type) }
+
+        before do
+          ChallengeProgress.create(challenge: promotion_1, customer: customer)
+        end
+
+        it 'does not create for exitent progress' do
+          expect { result }.to change { ChallengeProgress.count }.by(1)
+        end
+
+        it 'does not create for exitent progress' do
+          expect(returned_completed_challenges[0]['id']).to eq promotion_1.id
+        end
+      end
+
+      context 'arleady riched goal' do
+        let!(:promotion_1) { create(:challenge, name: 'Primeiro uso', goal: 1, promotion_type: promotion_type) }
+
+        before do
+          ChallengeProgress.create(challenge: promotion_1, customer: customer, completed_datetime: Time.now)
+        end
+
+        it 'does not create for exitent progress' do
+          expect { result }.to change { ChallengeProgress.count }.by(1)
+        end
+
+        it 'does not return challenge which was already riched' do
+          expect(returned_completed_challenges).to be_empty
+        end
       end
     end
 

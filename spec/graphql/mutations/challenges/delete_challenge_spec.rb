@@ -1,4 +1,3 @@
-
 # frozen_string_literal: true
 
 require 'rails_helper'
@@ -20,8 +19,7 @@ RSpec.describe SmartPromoApiSchema do
   describe 'Create Challenge' do
     let(:name) { 'Name' }
     let(:goal) { 20 }
-    let(:kind) { 1 }
-    let!(:challenge) { create(:challenge, name: 'Name', kind: 1, goal: 3) }
+    let!(:challenge) { create(:challenge, name: 'Name', promotion_type: promotion_types(:club), goal: 3) }
     let(:challenge_id) { challenge.id }
     let(:context_admin) { create(:auth, :adm) }
     let(:context) { { current_user: context_admin } }
