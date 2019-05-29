@@ -17,5 +17,7 @@ module Types
     field :create_promotion, mutation: Mutations::Promotions::CreatePromotion
     field :update_promotion, mutation: Mutations::Promotions::UpdatePromotion
     field :delete_promotion, mutation: Mutations::Promotions::DeletePromotion
+
+    field :create_challenge, mutation: Mutations::Challenges::CreateChallenge
   end
 end

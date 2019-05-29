@@ -22,7 +22,7 @@ module Mutations
 
         tickets = []
 
-        (1..quantity).times do
+        (1..quantity).step do
           tickets << Ticket.new(
             promotion_type_id: input[:promotion_type_id],
             partner: partner
@@ -31,7 +31,7 @@ module Mutations
 
         Ticket.import tickets
 
-        { ticket: true }
+        { success: true }
       rescue ActiveRecord::ActiveRecordError => e
         { success: false, errors: e.to_s }
       end

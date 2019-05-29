@@ -36,9 +36,9 @@ module Mutations
 
         { partner: partner }
       rescue ActiveRecord::RecordNotFound => e
-        { success: false, errors: e.to_s }
+        { partner: nil, errors: e.to_s }
       rescue ActiveRecord::ActiveRecordError => e
-        { success: false, errors: e.to_s }
+        { partner: nil, errors: e.to_s }
       end
     end
   end

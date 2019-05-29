@@ -24,7 +24,7 @@ module Mutations
 
         tickets.update_all(contempled_promotion_id: promotion.id)
 
-        { ticket: true }
+        { success: true }
       rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
         { success: false, errors: e.to_s }
       end
@@ -49,7 +49,7 @@ module Mutations
       end
 
       def validate!
-        raise(GraphQL::ExecutionError, 'invalid user') if !customer.is_a?(Customer) 
+        raise(GraphQL::ExecutionError, 'invalid user') unless customer.is_a?(Customer)
         raise(GraphQL::ExecutionError, '30 is the ticket limit') if quantity > 30
         raise(GraphQL::ExecutionError, 'fill just quantity or ticket id') if quantity > 1 && ticket_id
         raise(GraphQL::ExecutionError, 'invalid ticket') if tickets.none? && ticket_id

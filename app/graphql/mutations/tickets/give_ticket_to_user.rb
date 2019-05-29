@@ -29,7 +29,7 @@ module Mutations
 
         ticket.save!
 
-        { ticket: true }
+        { success: true }
       rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
         { success: false, errors: e.to_s }
       end
