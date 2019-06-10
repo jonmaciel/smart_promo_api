@@ -18,6 +18,10 @@ end
 end
 
 lists = Promotion.all
+customer = Customer.create!(
+  name: 'Maciel',
+  cpf: '07712973946',
+)
 partner = Partner.create!(
   name: 'Maciel',
   cnpj: '31698135000104',
@@ -28,6 +32,7 @@ partner = Partner.create!(
 
 2.times do
   Ticket.create(
+    name: 'test',
     partner: partner,
     promotion_type: promotion_type_fidelity
   )
@@ -41,9 +46,12 @@ end
 end
 
 user = Auth.create!(
-  email: 'joaomaciel.n@mail.com',
+  email: 'joaomaciel.n@gmail.com',
   cellphone_number: '41992855073',
   password: '1234',
   password_confirmation: '1234',
-  source: partner
+  source: customer
 )
+
+loyalty = Loyalty.create(partner: partner, customer: customer)
+Wallet.create(source: customer)

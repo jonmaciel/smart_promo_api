@@ -20,13 +20,32 @@ module Types
     end
 
     field :customers, [Types::Customers::CustomerType], null: true
+    field :challenges, [Types::Challenges::ChallengeType], null: true
+    field :loyalties, [Types::Customers::LoyaltyType], null: true
+    field :loyalty, Types::Customers::LoyaltyType, null: true do
+      argument :id, Int, 'Loyalty ID', required: true
+    end
+
+    def loyalties
+      return [] unless context[:auth].source.is_a?(Customer)
+      context[:auth].source.loyalties
+    end
+
+    def loyalty(args)
+      return nil unless context[:auth].source.is_a?(Customer)
+      context[:auth].source.loyalties.find_by(id: args[:id])
+    end
+
+    def challenges
+      Challenge.all
+    end
 
     def partner(args)
       Partner.find_by(id: args[:id])
     end
 
     def promotion(args)
-      Promotion.find_by(id: args[:id], partner_id: args[:partner_id])
+      Promotion.find_by(partner_id: args[:partner_id])
     end
 
     def promotions(args)

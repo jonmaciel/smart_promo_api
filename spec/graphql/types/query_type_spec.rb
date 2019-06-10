@@ -141,4 +141,31 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
   end
+
+  describe 'Challenges' do
+    let(:query_string) { %| query challenges { challenges { name progress { progress } } } | }
+    let(:customer) { create(:customer, name: 'Name', cpf: '07712973946') }
+    let(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: customer) }
+    let(:context) { { current_user: auth } }
+    let(:promotion_type) { promotion_types(:club) }
+    let(:first_challenge) { create(:challenge, name: 'Name 1', promotion_type: promotion_type) }
+    let(:second_challenge) { create(:challenge, name: 'Name 2', promotion_type: promotion_type) }
+
+    before do
+      ChallengeProgress.create(challenge: first_challenge, customer: customer, progress: 2)
+      ChallengeProgress.create(challenge: second_challenge, customer: customer, progress: 1)
+    end
+
+    context 'when the challenges have been found' do
+      it 'returns all challenges ' do
+        first_challenge = result['data']['challenges'][0]
+        second_challenge = result['data']['challenges'][1]
+
+        expect(first_challenge['name']).to eq 'Name 1'
+        expect(second_challenge['name']).to eq 'Name 2'
+        expect(first_challenge['progress']['progress']).to eq 2
+        expect(second_challenge['progress']['progress']).to eq 1
+      end
+    end
+  end
 end
