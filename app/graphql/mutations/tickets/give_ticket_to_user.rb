@@ -3,7 +3,7 @@
 module Mutations
   module Tickets
     class GiveTicketToUser < Mutations::BaseMutation
-      attr_accessor :ticket_id, :cellphone_number, :promotion_type_id, :promotion_id
+      attr_accessor :ticket_id, :cellphone_number, :promotion_id
 
       null true
       description 'Give Ticket To User'
@@ -17,7 +17,6 @@ module Mutations
 
       def resolve(input)
         @ticket_id = input[:ticket_id]
-        @promotion_type_id = input[:promotion_type_id]
         @promotion_id = input[:promotion_id]
         @cellphone_number = input[:cellphone_number]
 
@@ -37,7 +36,7 @@ module Mutations
       private
 
       def ticket
-        @ticket ||= ticket_id ? Ticket.find(ticket_id) : Ticket.new(promotion_type_id: promotion_type_id, partner: partner)
+        @ticket ||= ticket_id ? Ticket.find(ticket_id) : Ticket.new(partner: partner)
       end
 
       def validate!

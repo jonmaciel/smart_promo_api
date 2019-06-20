@@ -45,7 +45,7 @@ module Types
     end
 
     def promotion(args)
-      Promotion.find_by(partner_id: args[:partner_id])
+      Promotion.find_by(partner_id: args[:partner_id], id: args[:id])
     end
 
     def promotions(args)

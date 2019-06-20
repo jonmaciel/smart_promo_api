@@ -20,7 +20,7 @@ RSpec.describe SmartPromoApiSchema do
     let!(:auth) { create(:auth, email: 'p@mail.com', cellphone_number: partner_cellphone_number, password: '123456', password_confirmation: '123456', source: partner) }
     let(:partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '18210092000108') }
     let(:promotion_type) { promotion_types(:club) }
-    let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_type) }
+    let(:ticket) { create(:ticket, partner: partner) }
     let(:customer) { create(:customer, name: 'Customer', cpf: '07712973946') }
     let!(:auth_costumer) { create(:auth, email: 'c@mail.com', cellphone_number: customer_cellphone_number, password: '123456', password_confirmation: '123456', source: customer) }
     let(:customer_id) { customer.id }
@@ -153,7 +153,7 @@ RSpec.describe SmartPromoApiSchema do
 
       context 'when ticket does not belong to customer' do
         let(:second_partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000108') }
-        let(:ticket) { create(:ticket, partner: second_partner, promotion_type: promotion_types(:club)) }
+        let(:ticket) { create(:ticket, partner: second_partner) }
 
         it 'just returns error' do
           expect(returned_success).to be_falsey

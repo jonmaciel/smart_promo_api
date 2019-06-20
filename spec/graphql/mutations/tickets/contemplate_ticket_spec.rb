@@ -17,12 +17,12 @@ RSpec.describe SmartPromoApiSchema do
   end
 
   describe 'Update Partner' do
+    let(:promotion_type) { promotion_types(:club) }
     let!(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: customer) }
     let(:customer) { create(:customer, name: 'Name', cpf: '07712973946') }
     let!(:wallet) { create(:wallet, source: customer) }
     let(:partner) { create(:partner, name: 'Name', adress: 'Old Adress', cnpj: '18210092000108') }
-    let(:promotion_type) { promotion_types(:club) }
-    let(:ticket) { create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet) }
+    let(:ticket) { create(:ticket, partner: partner, wallet: wallet) }
     let(:promotion) { create(:promotion, name: 'Name', description: 'Desc', partner: partner, promotion_type: promotion_type) }
     let(:ticket_id) { ticket.id }
     let(:promotion_id) { promotion.id }
@@ -136,9 +136,9 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       before do
-        create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet)
-        create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet)
-        create(:ticket, partner: partner, promotion_type: promotion_type, wallet: wallet)
+        create(:ticket, partner: partner, wallet: wallet)
+        create(:ticket, partner: partner, wallet: wallet)
+        create(:ticket, partner: partner, wallet: wallet)
       end
 
       it 'just move the ticket' do
@@ -202,7 +202,7 @@ RSpec.describe SmartPromoApiSchema do
 
     context 'when ticket does not belong to customer' do
       let(:second_partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000108') }
-      let(:ticket) { create(:ticket, partner: second_partner, promotion_type: promotion_types(:club)) }
+      let(:ticket) { create(:ticket, partner: second_partner) }
 
       it 'just returns error' do
         expect(returned_success).to be_falsey

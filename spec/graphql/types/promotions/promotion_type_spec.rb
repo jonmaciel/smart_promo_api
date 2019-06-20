@@ -8,6 +8,16 @@ describe Types::Promotions::PromotionType do
     it { is_expected.to be_of_type 'Int' }
   end
 
+  describe 'cost' do
+    subject { described_class.fields['cost'].to_graphql }
+    it { is_expected.to be_of_type 'Int' }
+  end
+
+  describe 'goal_quantity' do
+    subject { described_class.fields['goalQuantity'].to_graphql }
+    it { is_expected.to be_of_type 'Int' }
+  end
+
   describe 'name' do
     subject { described_class.fields['name'].to_graphql }
     it { is_expected.to be_of_type 'String' }

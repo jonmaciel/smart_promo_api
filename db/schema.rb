@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.datetime "start_datetime"
     t.datetime "end_datetime"
     t.boolean "highlighted"
+    t.integer "cost"
     t.float "index"
     t.boolean "active"
     t.bigint "partner_id"
@@ -136,14 +137,13 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
   create_table "tickets", force: :cascade do |t|
     t.integer "value"
     t.bigint "partner_id", null: false
-    t.bigint "promotion_type_id", null: false
     t.bigint "wallet_id"
     t.bigint "contempled_promotion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["contempled_promotion_id"], name: "index_tickets_on_contempled_promotion_id"
     t.index ["partner_id"], name: "index_tickets_on_partner_id"
-    t.index ["promotion_type_id"], name: "index_tickets_on_promotion_type_id"
+    t.index ["wallet_id", "partner_id"], name: "index_tickets_on_wallet_id_and_partner_id"
     t.index ["wallet_id"], name: "index_tickets_on_wallet_id"
   end
 

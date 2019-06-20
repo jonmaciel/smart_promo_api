@@ -22,9 +22,4 @@ describe Types::Tickets::TicketType do
     subject { described_class.fields['partner'].to_graphql }
     it { is_expected.to be_of_type 'Partner' }
   end
-
-  describe 'type' do
-    subject { described_class.fields['type'].to_graphql }
-    it { is_expected.to be_of_type 'String' }
-  end
 end
