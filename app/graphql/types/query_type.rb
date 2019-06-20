@@ -27,13 +27,13 @@ module Types
     end
 
     def loyalties
-      return [] unless context[:auth].source.is_a?(Customer)
-      context[:auth].source.loyalties
+      return [] unless context[:current_user].source.is_a?(Customer)
+      context[:current_user].source.loyalties
     end
 
     def loyalty(args)
-      return nil unless context[:auth].source.is_a?(Customer)
-      context[:auth].source.loyalties.find_by(id: args[:id])
+      return nil unless context[:current_user].source.is_a?(Customer)
+      context[:current_user].source.loyalties.find_by(id: args[:id])
     end
 
     def challenges

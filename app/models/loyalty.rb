@@ -5,6 +5,6 @@ class Loyalty < ApplicationRecord
   belongs_to :partner
 
   def balance
-    customer.wallet.tickets.where(partner: partner).count
+    customer.wallet.tickets.where(partner: partner, contempled_promotion: nil).count
   end
 end

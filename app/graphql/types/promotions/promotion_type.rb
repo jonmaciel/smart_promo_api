@@ -16,7 +16,7 @@ module Types
       field :index, Float, null: true
       field :active, Boolean, null: true
       field :promotion_type, Types::Promotions::PromotionTypeType, null: true
-      field :balance, String, null: true, resolve: ->(obj, _, _) { obj.promotion_type.label }
+      field :balance, Int, null: true
 
       field :partner, Types::Partners::PartnerType, null: true
 

@@ -63,7 +63,8 @@ module Mutations
       def tickets
         @tickets ||= begin
                        ticket_relation = customer.wallet.tickets
-                       ticket_relation = ticket_relation.where(partner_id: promotion.partner)
+                       ticket_relation = ticket_relation.where(contempled_promotion: nil)
+                       ticket_relation = ticket_relation.where(partner: promotion.partner)
                        ticket_relation = ticket_relation.where(id: ticket_id) if ticket_id
                        ticket_relation.limit(quantity)
                      end

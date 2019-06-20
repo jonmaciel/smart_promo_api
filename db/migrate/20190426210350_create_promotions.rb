@@ -6,8 +6,8 @@ class CreatePromotions < ActiveRecord::Migration[5.2]
       t.datetime :start_datetime
       t.datetime :end_datetime
       t.boolean :highlighted
-      t.integer :cost
-      t.integer :goal_quantity
+      t.integer :cost, null: false
+      t.integer :goal_quantity, null: false
       t.float :index
       t.boolean :active
 

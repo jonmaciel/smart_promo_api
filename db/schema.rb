@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
 
   create_table "promotion_types", force: :cascade do |t|
     t.string "label", null: false
+    t.string "slug", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -124,6 +125,7 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.datetime "end_datetime"
     t.boolean "highlighted"
     t.integer "cost"
+    t.integer "goal_quantity"
     t.float "index"
     t.boolean "active"
     t.bigint "partner_id"

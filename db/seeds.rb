@@ -25,6 +25,8 @@ loyalty = Loyalty.create(partner: partner, customer: customer)
     name: Faker::Lorem.word,
     description: 'Fidelidade teste',
     promotion_type: promotion_type_fidelity,
+    cost: 10,
+    goal_quantity: 100,
     partner: partner,
   )
 end
@@ -35,20 +37,24 @@ end
     description: 'Clube de benefícios teste',
     promotion_type: promotion_type_club,
     partner: partner,
+    cost: 1,
+    goal_quantity: 50,
   )
 end
 
+
+20.times do
+  Ticket.create(
+    partner: partner,
+    wallet: wallet,
+  )
+end
 
 10.times do
   Ticket.create(
     partner: partner,
-  )
-end
-
-5.times do
-  Ticket.create(
-    partner: partner,
     wallet: wallet,
+    contempled_promotion: Promotion.first
   )
 end
 
