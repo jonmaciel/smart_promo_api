@@ -1,7 +1,7 @@
 require 'faker'
 
-promotion_type_fidelity = PromotionType.create!(label: 'Programa de Fidelidade')
-promotion_type_club = PromotionType.create!(label: 'Clube de Benefícios')
+promotion_type_fidelity = PromotionType.create!(label: 'Programa de Fidelidade', slug: 'loyalty')
+promotion_type_club = PromotionType.create!(label: 'Clube de Benefícios', slug: 'club')
 
 customer = Customer.create!(
   name: 'Maciel',

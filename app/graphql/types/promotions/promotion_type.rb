@@ -15,7 +15,7 @@ module Types
       field :highlighted, Boolean, null: true
       field :index, Float, null: true
       field :active, Boolean, null: true
-      field :type, String, null: true, resolve: ->(obj, _, _) { obj.promotion_type.label }
+      field :promotion_type, Types::Promotions::PromotionTypeType, null: true
       field :balance, String, null: true, resolve: ->(obj, _, _) { obj.promotion_type.label }
 
       field :partner, Types::Partners::PartnerType, null: true

@@ -48,7 +48,10 @@ RSpec.describe SmartPromoApiSchema do
               endDatetime
               active
               highlighted
-              type
+              promotionType {
+                id
+                label
+              }
             }
             errors
           }
@@ -81,7 +84,7 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_promotion['endDatetime']).to eq '2017-01-02 00:00:00 UTC'
         expect(returned_promotion['active']).to eq active
         expect(returned_promotion['highlighted']).to eq highlighted
-        expect(returned_promotion['type']).to eq promotion_types(:club).label
+        expect(returned_promotion['promotionType']['label']).to eq promotion_types(:club).label
       end
     end
 
