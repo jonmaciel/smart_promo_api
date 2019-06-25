@@ -2,11 +2,9 @@
 
 module Types
   class MutationType < Types::BaseObject
-    field :create_customer, mutation: Mutations::Customers::CreateCustomer
     field :update_customer, mutation: Mutations::Customers::UpdateCustomer
     field :delete_customer, mutation: Mutations::Customers::DeleteCustomer
 
-    field :create_partner, mutation: Mutations::Partners::CreatePartner
     field :delete_partner, mutation: Mutations::Partners::DeletePartner
     field :update_partner, mutation: Mutations::Partners::UpdatePartner
 

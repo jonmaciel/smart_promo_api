@@ -3,8 +3,6 @@
 module Mutations
   module Tickets
     class CreateTickets < Mutations::BaseMutation
-      attr_accessor :promotion_id, :cellphone_number, :promotion_id, :quantity
-
       graphql_name 'CreateTicket'
       null true
       description 'Create new Ticket'
@@ -43,6 +41,8 @@ module Mutations
       end
 
       private
+
+      attr_accessor :cellphone_number, :promotion_id, :quantity
 
       def customer
         @customer ||= Auth.find_by!(cellphone_number: cellphone_number).source

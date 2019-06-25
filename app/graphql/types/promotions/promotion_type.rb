@@ -23,7 +23,8 @@ module Types
       def balance
         customer = context[:current_user].source
 
-        return 0 if  customer.is_a?(Partner)
+        return 0 if customer.is_a?(Partner)
+
         object.tickets.where(wallet: customer.wallet).count
       end
     end

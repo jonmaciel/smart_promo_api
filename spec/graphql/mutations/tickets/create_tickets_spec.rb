@@ -33,7 +33,7 @@ RSpec.describe SmartPromoApiSchema do
     let(:variables) do
       {
         cellphoneNumber: customer_cellphone_number,
-        quantity: quantity,
+        quantity: quantity
       }
     end
     let(:mutation_string) do
@@ -68,22 +68,22 @@ RSpec.describe SmartPromoApiSchema do
 
       context 'create and contemplate' do
         let(:promotion_type) { promotion_types(:club) }
-        let(:promotion) {
+        let(:promotion) do
           create(
             :promotion,
-                 name: 'Old Name',
-                 description: 'Old description',
-                 partner: partner,
-                 promotion_type: promotion_type
+            name: 'Old Name',
+            description: 'Old description',
+            partner: partner,
+            promotion_type: promotion_type
           )
-        }
+        end
         let(:promotion_id) { promotion.id }
         let(:variables) do
           {
             promotionId: promotion_id,
             cellphoneNumber: customer_cellphone_number,
             ticketId: ticket_id,
-            quantity: quantity,
+            quantity: quantity
           }
         end
 
@@ -101,7 +101,7 @@ RSpec.describe SmartPromoApiSchema do
           {
             cellphoneNumber: partner_cellphone_number,
             ticketId: ticket_id,
-            quantity: quantity,
+            quantity: quantity
           }
         end
 
@@ -115,7 +115,7 @@ RSpec.describe SmartPromoApiSchema do
           {
             cellphoneNumber: '41988341100',
             ticketId: ticket_id,
-            quantity: quantity,
+            quantity: quantity
           }
         end
 
