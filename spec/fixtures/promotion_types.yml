@@ -1,5 +1,7 @@
 fidelidade:
   label: 'Fidelidade'
+  slug: 'fidelidade'
 
 club:
   label: 'Clube de Benefícios'
+  slug: 'clube'

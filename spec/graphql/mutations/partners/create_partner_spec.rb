@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SmartPromoApiSchema do
+RSpec.describe SmartPromoPublicApiSchema do
   let(:context) { {} }
   let(:variables) { {} }
   let(:result) do
