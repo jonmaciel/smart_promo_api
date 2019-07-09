@@ -42,7 +42,7 @@ RSpec.describe SmartPromoPublicApiSchema do
               email
               cellphoneNumber
             }
-            errors
+            authToken
           }
         }
       |
@@ -52,8 +52,12 @@ RSpec.describe SmartPromoPublicApiSchema do
       result['data']['createCustomer']['customer']
     end
 
+    let(:returned_token) do
+      result['data']['createCustomer']['authToken']
+    end
+
     let(:returned_errors) do
-      result['data']['createCustomer']['errors']
+      result['errors']
     end
 
     let(:newest_customer) do
@@ -95,6 +99,13 @@ RSpec.describe SmartPromoPublicApiSchema do
         expect(newest_auth.email).to eq email
         expect(newest_wallet.code).to eq 'miliseconds'
       end
+
+      it 'alson creates session' do
+        authenticate_user = double(AuthenticateUser, result: { token: 'token' })
+        expect(AuthenticateUser).to receive(:call).with(email, password).and_return(authenticate_user)
+
+        expect(returned_token).to eq 'token'
+      end
     end
 
     context 'when the customer has ivalid field value' do
@@ -112,8 +123,8 @@ RSpec.describe SmartPromoPublicApiSchema do
         expect { result }.to change { Wallet.count }.by(0)
       end
       it 'returns error and not customer' do
-        expect(returned_customer).to be_nil
-        expect(returned_errors).to eq 'Validation failed: Auth email is invalid'
+        expect(returned_errors.first['message']).to eq 'is invalid'
+        expect(returned_errors.first['extensions']['field']).to eq 'auth.email'
       end
     end
   end

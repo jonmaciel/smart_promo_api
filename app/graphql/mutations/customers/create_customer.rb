@@ -14,28 +14,44 @@ module Mutations
       argument :password_confirmation, String, required: true
 
       field :customer, Types::Customers::CustomerType, null: true
-      field :errors, String, null: true
+      field :auth_token, String, null: true
 
       def resolve(input)
-        customer = Customer.new(
-          name: input[:name],
-          cpf: input[:cpf],
+        @customer_attrs = input
+
+        customer.save!
+
+        { customer: customer, auth_token: auth_token }
+      rescue ActiveRecord::ActiveRecordError => e
+        e.record.errors.each do |field, error|
+          context.add_error(GraphQL::ExecutionError.new(error, extensions: { 'field' => field.to_s }))
+        end
+
+        context.add_error(GraphQL::ExecutionError.new('Validation Error', extensions: { 'field' => 'root'  }))
+      end
+
+      private
+
+      attr_reader :customer_attrs
+
+      def customer
+        @customer ||= Customer.new(
+          name: customer_attrs[:name],
+          cpf: customer_attrs[:cpf],
           auth_attributes: {
-            cellphone_number: input[:cellphone_number],
-            email: input[:email],
-            password: input[:password],
-            password_confirmation: input[:password_confirmation]
+            cellphone_number: customer_attrs[:cellphone_number],
+            email: customer_attrs[:email],
+            password: customer_attrs[:password],
+            password_confirmation: customer_attrs[:password_confirmation]
           },
           wallet_attributes: {
             code: DateTime.now.strftime('%Q')
           }
         )
+      end
 
-        customer.save!
-
-        { customer: customer }
-      rescue ActiveRecord::ActiveRecordError => e
-        { customer: nil, errors: e.to_s }
+      def auth_token
+        AuthenticateUser.call(customer_attrs[:email], customer_attrs[:password]).result[:token]
       end
     end
   end
