@@ -21,7 +21,7 @@ RSpec.describe SmartPromoPublicApiSchema do
     let(:variables) do
       {
         login: login,
-        password: password,
+        password: password
       }
     end
     let(:mutation_string) do
@@ -44,7 +44,7 @@ RSpec.describe SmartPromoPublicApiSchema do
 
     context 'when it is succefully authenticated' do
       it 'returns the righ challenge' do
-        result = double(AuthenticateUser, result: { token:  'token' }, success?: true)
+        result = double(AuthenticateUser, result: { token: 'token' }, success?: true)
 
         expect(AuthenticateUser).to receive(:call).with(login, password).and_return(result)
         expect(returned_token).to eql 'token'

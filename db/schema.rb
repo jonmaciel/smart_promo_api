@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_01_000922) do
+ActiveRecord::Schema.define(version: 2019_07_24_094615) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,15 @@ ActiveRecord::Schema.define(version: 2019_05_01_000922) do
     t.datetime "updated_at", null: false
     t.index ["partner_id"], name: "index_promotions_on_partner_id"
     t.index ["promotion_type_id"], name: "index_promotions_on_promotion_type_id"
+  end
+
+  create_table "sms_verification_codes", force: :cascade do |t|
+    t.string "phone_number"
+    t.string "code"
+    t.boolean "validated", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["phone_number"], name: "index_sms_verification_codes_on_phone_number"
   end
 
   create_table "tickets", force: :cascade do |t|

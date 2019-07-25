@@ -27,7 +27,7 @@ module Mutations
           context.add_error(GraphQL::ExecutionError.new(error, extensions: { 'field' => field.to_s }))
         end
 
-        context.add_error(GraphQL::ExecutionError.new('Validation Error', extensions: { 'field' => 'root'  }))
+        context.add_error(GraphQL::ExecutionError.new('Validation Error', extensions: { 'field' => 'root' }))
       end
 
       private
