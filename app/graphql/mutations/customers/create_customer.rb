@@ -7,6 +7,7 @@ module Mutations
       description 'Create new customer'
 
       argument :email, String, required: false
+      argument :code, String, required: true
       argument :cellphone_number, String, required: true
       argument :name, String, required: true
       argument :cpf, String, required: true
@@ -17,7 +18,10 @@ module Mutations
       field :auth_token, String, null: true
 
       def resolve(input)
+        @code = input.delete(:code)
         @customer_attrs = input
+
+        validate_code!
 
         customer.save!
 
@@ -32,7 +36,7 @@ module Mutations
 
       private
 
-      attr_reader :customer_attrs
+      attr_reader :customer_attrs, :code
 
       def customer
         @customer ||= Customer.new(
@@ -52,6 +56,16 @@ module Mutations
 
       def auth_token
         AuthenticateUser.call(customer_attrs[:email], customer_attrs[:password]).result[:token]
+      end
+
+      def validate_code!
+        return true if sms_verification_code.code == code
+
+        raise(GraphQL::ExecutionError, 'Invalid Verirification Code')
+      end
+
+      def sms_verification_code
+        @sms_verification_code ||= SmsVerificationCode.find_by(phone_number: customer_attrs[:cellphone_number])
       end
     end
   end

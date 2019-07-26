@@ -17,13 +17,16 @@ RSpec.describe SmartPromoPublicApiSchema do
   end
 
   describe 'Create Customer' do
+    let!(:sms_verification_code) { SmsVerificationCode.create(phone_number: cellphone_number, code: code) }
     let(:name) { 'Name' }
     let(:cpf) { '07712973946' }
     let(:cellphone_number) { '41992855075' }
+    let(:code) { '123456' }
     let(:email) { 'test@mail.com' }
     let(:password) { '123123123' }
     let(:variables) do
       {
+        code: code,
         name: name,
         cpf: cpf,
         cellphoneNumber: cellphone_number,
@@ -34,8 +37,8 @@ RSpec.describe SmartPromoPublicApiSchema do
     end
     let(:mutation_string) do
       %|
-        mutation createCustomer($name: String!, $cpf: String!, $email: String!, $cellphoneNumber: String!, $password: String!, $passwordConfirmation: String!){
-          createCustomer(name: $name,  cpf: $cpf, email: $email, password: $password, cellphoneNumber: $cellphoneNumber, passwordConfirmation: $passwordConfirmation) {
+        mutation createCustomer($name: String!, $cpf: String!, $email: String!, $cellphoneNumber: String!, $password: String!, $passwordConfirmation: String!, $code: String!){
+          createCustomer(name: $name,  cpf: $cpf, email: $email, password: $password, cellphoneNumber: $cellphoneNumber, passwordConfirmation: $passwordConfirmation, code: $code) {
             customer {
               id
               name
@@ -108,7 +111,15 @@ RSpec.describe SmartPromoPublicApiSchema do
       end
     end
 
-    context 'when the customer has ivalid field value' do
+    context 'invalid code' do
+      let!(:sms_verification_code) { SmsVerificationCode.create(phone_number: cellphone_number, code: '000000') }
+
+      it 'returns error and not customer' do
+        expect(returned_errors.first['message']).to eq 'Invalid Verirification Code'
+      end
+    end
+
+    context 'when the customer has invalid field value' do
       let(:email) { 'invalid email' }
 
       it 'creates its auth' do
@@ -122,6 +133,7 @@ RSpec.describe SmartPromoPublicApiSchema do
       it 'creates new wallet' do
         expect { result }.to change { Wallet.count }.by(0)
       end
+
       it 'returns error and not customer' do
         expect(returned_errors.first['message']).to eq 'is invalid'
         expect(returned_errors.first['extensions']['field']).to eq 'auth.email'

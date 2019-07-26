@@ -19,7 +19,7 @@ module Mutations
         Rails.logger.info "### Your code is #{sms_verification_code.code} ###"
         { success: true }
       rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
-        { success: false, errors: e.to_s }
+        context.add_error(GraphQL::ExecutionError.new(e.to_s, extensions: { 'field' => 'root' }))
       end
 
       private
