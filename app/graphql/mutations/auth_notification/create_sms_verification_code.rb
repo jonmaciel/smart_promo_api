@@ -14,9 +14,7 @@ module Mutations
 
         validate!
 
-        if sms_verification_code.validated? || sms_verification_code.after_ten_minutes?
-          sms_verification_code.update_attributes(code: code, validated: false)
-        end
+        sms_verification_code.update_attributes(code: code, validated: false) if sms_verification_code.validated? || sms_verification_code.after_ten_minutes?
 
         Rails.logger.info "###########################"
         Rails.logger.info "### Your code is #{sms_verification_code.code} ###"
@@ -32,13 +30,9 @@ module Mutations
       attr_accessor :phone_number
 
       def validate!
-        unless only_number? && phone_number.size == 11
-          raise(GraphQL::ExecutionError, 'Número de celular inválido')
-        end
+        raise(GraphQL::ExecutionError, 'Número de celular inválido') unless only_number? && phone_number.size == 11
 
-        if ::Auth.where(cellphone_number: phone_number).one?
-          raise(GraphQL::ExecutionError, 'Número de celular já cadastrado')
-        end
+        raise(GraphQL::ExecutionError, 'Número de celular já cadastrado') if ::Auth.where(cellphone_number: phone_number).one?
 
         true
       end
