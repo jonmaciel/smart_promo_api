@@ -33,7 +33,6 @@ module Mutations
 
       def validated!
         raise(GraphQL::ExecutionError, 'Expirated code') if sms_verification_code.after_ten_minutes?
-
         raise(GraphQL::ExecutionError, 'Invalid code') if sms_verification_code.code != code
       end
     end

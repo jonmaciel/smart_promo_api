@@ -57,6 +57,7 @@ RSpec.describe SmartPromoPublicApiSchema do
 
         it 'updates the code' do
           expect_any_instance_of(SmsVerificationCode).to receive(:after_ten_minutes?).and_return(true)
+
           expect { result }.to(change { sms_verification_code.reload.code })
         end
       end

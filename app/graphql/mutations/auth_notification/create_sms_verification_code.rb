@@ -14,9 +14,14 @@ module Mutations
 
         validate!
 
-        sms_verification_code.update_attribute(:code, code) if sms_verification_code.after_ten_minutes?
+        if sms_verification_code.validated? || sms_verification_code.after_ten_minutes?
+          sms_verification_code.update_attributes(code: code, validated: false)
+        end
 
+        Rails.logger.info "###########################"
         Rails.logger.info "### Your code is #{sms_verification_code.code} ###"
+        Rails.logger.info "###########################"
+
         { success: true }
       rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
         context.add_error(GraphQL::ExecutionError.new(e.to_s, extensions: { 'field' => 'root' }))
@@ -27,9 +32,15 @@ module Mutations
       attr_accessor :phone_number
 
       def validate!
-        return true if only_number? && phone_number.size == 11
+        unless only_number? && phone_number.size == 11
+          raise(GraphQL::ExecutionError, 'Número de celular inválido')
+        end
 
-        raise(GraphQL::ExecutionError, 'Inválid Phone Number')
+        if ::Auth.where(cellphone_number: phone_number).one?
+          raise(GraphQL::ExecutionError, 'Número de celular já cadastrado')
+        end
+
+        true
       end
 
       def sms_verification_code

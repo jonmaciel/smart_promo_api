@@ -10,5 +10,7 @@ module Types
 
     field :create_sms_verification_code, mutation: Mutations::AuthNotification::CreateSmsVerificationCode
     field :validate_sms_verification_code, mutation: Mutations::AuthNotification::ValidateSmsVerificationCode
+
+    field :uniqueness_check, mutation: Mutations::Validations::UniquenessCheck
   end
 end
