@@ -8,13 +8,27 @@ module Types
       field :id, Int, null: true
       field :name, String, null: true
       field :adress, String, null: true
+      field :balance, Int, null: true
       field :cnpj, String, null: true
       field :latitude, String, null: true
       field :longitude, String, null: true
       field :promotions, [Types::Promotions::PromotionType], null: true
+      field :promotion_count, Int, null: true
       field :cellphone_number, String, null: true, resolve: ->(obj, _, _) { obj.auth.cellphone_number }
       field :email, String, null: true, resolve: ->(obj, _, _) { obj.auth.email }
       field :partner_profile, PartnerProfileType, null: true
+
+      def promotion_count
+        object.promotions.count
+      end
+
+      def balance
+        customer = context[:current_user].source
+
+        return 0 if customer.is_a?(Partner)
+
+        customer.wallet.tickets.where(partner: object, contempled_promotion_id: nil).count
+      end
     end
   end
 end
