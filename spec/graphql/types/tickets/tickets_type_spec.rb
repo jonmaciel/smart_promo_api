@@ -17,4 +17,9 @@ describe Types::Tickets::TicketType do
     subject { described_class.fields['promotionContempled'].to_graphql }
     it { is_expected.to be_of_type 'Promotion' }
   end
+
+  describe 'created_at' do
+    subject { described_class.fields['createdAt'].to_graphql }
+    it { is_expected.to be_of_type 'DateTime' }
+  end
 end

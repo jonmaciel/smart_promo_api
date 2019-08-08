@@ -19,6 +19,7 @@ module Types
       argument :id, Int, 'Costumer ID', required: true
     end
 
+    field :tickets, [Types::Tickets::TicketType], null: true
     field :customers, [Types::Customers::CustomerType], null: true
     field :challenges, [Types::Challenges::ChallengeType], null: true
     field :loyalties, [Types::Customers::LoyaltyType], null: true
@@ -57,6 +58,12 @@ module Types
 
     def customer(args)
       Customer.find_by(id: args[:id])
+    end
+
+    def tickets
+      return nil unless context[:current_user].source.is_a?(Customer)
+
+      context[:current_user].source.wallet.tickets
     end
 
     def customers

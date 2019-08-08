@@ -168,4 +168,64 @@ RSpec.describe SmartPromoApiSchema do
       end
     end
   end
+
+  describe 'Challenes' do
+    let(:query_string) { %( query challenges { challenges { name progress { progress } } } ) }
+    let(:customer) { create(:customer, name: 'Name', cpf: '07712973946') }
+    let(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: customer) }
+    let(:context) { { current_user: auth } }
+    let(:promotion_type) { promotion_types(:club) }
+    let(:first_challenge) { create(:challenge, name: 'Name 1', promotion_type: promotion_type) }
+    let(:second_challenge) { create(:challenge, name: 'Name 2', promotion_type: promotion_type) }
+
+    before do
+      ChallengeProgress.create(challenge: first_challenge, customer: customer, progress: 2)
+      ChallengeProgress.create(challenge: second_challenge, customer: customer, progress: 1)
+    end
+
+    context 'when the challenges have been found' do
+      it 'returns all challenges ' do
+        first_challenge = result['data']['challenges'][0]
+        second_challenge = result['data']['challenges'][1]
+
+        expect(first_challenge['name']).to eq 'Name 1'
+        expect(second_challenge['name']).to eq 'Name 2'
+        expect(first_challenge['progress']['progress']).to eq 2
+        expect(second_challenge['progress']['progress']).to eq 1
+      end
+    end
+  end
+
+  describe 'Tickets' do
+    let(:query_string) { %( query { tickets { id createdAt } } ) }
+    let(:customer) { create(:customer, name: 'Name', cpf: '07712973946') }
+    let(:partner) { create(:partner, name: 'Name', adress: 'Old Adress', cnpj: '18210092000108') }
+    let(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: customer) }
+    let(:context) { { current_user: auth } }
+    let(:wallet) { create(:wallet, source: customer) }
+    let!(:ticket1) { create(:ticket, partner: partner, wallet: wallet) }
+    let!(:ticket2) { create(:ticket, partner: partner, wallet: wallet) }
+
+    context 'When the user is Customer' do
+      it 'returns all tickets' do
+        first_ticket = result['data']['tickets'][0]
+        second_ticket = result['data']['tickets'][1]
+
+        expect(first_ticket['id']).to eq ticket1.id
+        expect(first_ticket['createdAt']).to eq ticket1.created_at.utc.iso8601
+
+        expect(second_ticket['id']).to eq ticket2.id
+        expect(second_ticket['createdAt']).to eq ticket2.created_at.utc.iso8601
+      end
+    end
+
+    context 'When the user is Partner' do
+      let(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: partner) }
+      let(:context) { { current_user: auth } }
+
+      it 'returns nill' do
+        expect(result['data']['tickets']).to be_nil
+      end
+    end
+  end
 end
