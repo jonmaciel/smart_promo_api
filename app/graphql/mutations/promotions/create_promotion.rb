@@ -15,6 +15,9 @@ module Mutations
       argument :highlighted, Boolean, required: false
       argument :index, Float, required: false
       argument :active, Boolean, required: false
+      argument :cost, Int, required: true
+      argument :goal_quantity, Int, required: true
+
 
       field :promotion, Types::Promotions::PromotionType, null: true
 
@@ -51,6 +54,8 @@ module Mutations
           promotion_type_id: input[:promotion_type_id],
           index: input[:index],
           active: input[:active],
+          cost: input[:cost],
+          goal_quantity: input[:goal_quantity],
           partner: partner
         )
       end

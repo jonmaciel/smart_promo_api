@@ -17,20 +17,10 @@ module Mutations
         @quantity = input[:quantity]
         @promotion_id = input[:promotion_id]
         @cellphone_number = input[:cellphone_number]
-        promotion_id = input[:promotion_id]
+        @promotion_id = input[:promotion_id]
 
         validate!
         create_loyalty_if_nil!
-
-        tickets = []
-
-        (1..quantity).step do
-          tickets << Ticket.new(
-            partner: partner,
-            wallet: customer.wallet,
-            contempled_promotion_id: promotion_id
-          )
-        end
 
         Ticket.import tickets
 
@@ -47,7 +37,20 @@ module Mutations
 
       private
 
-      attr_accessor :cellphone_number, :promotion_id, :quantity
+      attr_accessor :cellphone_number, :promotion_id, :quantity, :promotion_id
+
+      def tickets
+        @tickets ||= [].tap do |elements|
+          1.upto(quantity) do |index|
+            elements << Ticket.new(
+              partner: partner,
+              wallet: customer.wallet,
+              cellphone_number: cellphone_number,
+              contempled_promotion_id: promotion_id
+            )
+          end
+        end
+      end
 
       def customer
         @customer ||= Auth.find_by!(cellphone_number: cellphone_number).source

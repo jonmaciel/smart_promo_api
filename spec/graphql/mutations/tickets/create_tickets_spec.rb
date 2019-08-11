@@ -27,6 +27,8 @@ RSpec.describe SmartPromoApiSchema do
     let(:quantity) { 10 }
     let(:ticket) { create(:ticket, partner: partner, wallet: wallet) }
     let(:ticket_id) { ticket.id }
+    let(:cost) { 1 }
+    let(:goal_quantity) { 10 }
     let(:customer_cellphone_number) { '41992855077' }
     let(:partner_cellphone_number) { '41992855078' }
     let!(:wallet) { create(:wallet, source: customer) }

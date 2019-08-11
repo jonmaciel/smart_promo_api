@@ -25,6 +25,8 @@ RSpec.describe SmartPromoApiSchema do
     let(:promotion_type_id) { promotion_types(:club).id }
     let(:highlighted) { false }
     let(:active) { true }
+    let(:cost) { 1 }
+    let(:goal_quantity) { 10 }
     let(:variables) do
       {
         name: name,
@@ -33,13 +35,15 @@ RSpec.describe SmartPromoApiSchema do
         endDatetime: end_datetime,
         promotionTypeId: promotion_type_id,
         active: active,
-        highlighted: highlighted
+        highlighted: highlighted,
+        cost: cost,
+        goalQuantity: goal_quantity
       }
     end
     let(:mutation_string) do
       %|
-        mutation createPromotion($name: String!, $promotionTypeId: Int!, $description: String!, $startDatetime: String!, $endDatetime: String!, $highlighted: Boolean, $active: Boolean) {
-          createPromotion(name: $name, promotionTypeId: $promotionTypeId, description: $description, startDatetime: $startDatetime, endDatetime: $endDatetime, highlighted: $highlighted, active: $active) {
+        mutation createPromotion($name: String!, $cost: Int!, $goalQuantity: Int!, $promotionTypeId: Int!, $description: String!, $startDatetime: String!, $endDatetime: String!, $highlighted: Boolean, $active: Boolean) {
+          createPromotion(name: $name, promotionTypeId: $promotionTypeId, cost: $cost, goalQuantity: $goalQuantity, description: $description, startDatetime: $startDatetime, endDatetime: $endDatetime, highlighted: $highlighted, active: $active) {
             promotion {
               id
               name
@@ -48,6 +52,8 @@ RSpec.describe SmartPromoApiSchema do
               endDatetime
               active
               highlighted
+              cost
+              goalQuantity
               promotionType {
                 id
                 label
@@ -82,6 +88,8 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_promotion['endDatetime']).to eq '2017-01-02T00:00:00Z'
         expect(returned_promotion['active']).to eq active
         expect(returned_promotion['highlighted']).to eq highlighted
+        expect(returned_promotion['cost']).to eq cost
+        expect(returned_promotion['goalQuantity']).to eq goal_quantity
         expect(returned_promotion['promotionType']['label']).to eq promotion_types(:club).label
       end
     end
