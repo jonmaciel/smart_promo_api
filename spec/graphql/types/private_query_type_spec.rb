@@ -197,25 +197,33 @@ RSpec.describe SmartPromoApiSchema do
   end
 
   describe 'Tickets' do
-    let(:query_string) { %( query { tickets { id createdAt } } ) }
+    let(:query_string) do
+      %(
+        query tickets($promotionId: Int!) {
+          tickets(promotionId: $promotionId) {
+            id
+            createdAt
+          }
+        }
+      )
+    end
+    let(:variables) { { promotionId: promotion.id } }
+    let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner, promotion_type: promotion_types(:club)) }
     let(:customer) { create(:customer, name: 'Name', cpf: '07712973946') }
     let(:partner) { create(:partner, name: 'Name', adress: 'Old Adress', cnpj: '18210092000108') }
     let(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: customer) }
     let(:context) { { current_user: auth } }
     let(:wallet) { create(:wallet, source: customer) }
-    let!(:ticket1) { create(:ticket, partner: partner, wallet: wallet) }
+    let!(:ticket1) { create(:ticket, partner: partner, wallet: wallet, contempled_promotion: promotion) }
     let!(:ticket2) { create(:ticket, partner: partner, wallet: wallet) }
 
     context 'When the user is Customer' do
       it 'returns all tickets' do
-        first_ticket = result['data']['tickets'][0]
-        second_ticket = result['data']['tickets'][1]
+        ticket = result['data']['tickets'][0]
 
-        expect(first_ticket['id']).to eq ticket1.id
-        expect(first_ticket['createdAt']).to eq ticket1.created_at.utc.iso8601
-
-        expect(second_ticket['id']).to eq ticket2.id
-        expect(second_ticket['createdAt']).to eq ticket2.created_at.utc.iso8601
+        expect(ticket['id']).to eq ticket1.id
+        expect(ticket['createdAt']).to eq ticket1.created_at.utc.iso8601
+        expect(result['data']['tickets'].count).to eq 1
       end
     end
 

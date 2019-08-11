@@ -19,7 +19,10 @@ module Types
       argument :id, Int, 'Costumer ID', required: true
     end
 
-    field :tickets, [Types::Tickets::TicketType], null: true
+    field :tickets, [Types::Tickets::TicketType], null: true do
+      argument :promotion_id, Int, 'Costumer ID', required: true
+    end
+
     field :customers, [Types::Customers::CustomerType], null: true
     field :challenges, [Types::Challenges::ChallengeType], null: true
     field :loyalties, [Types::Customers::LoyaltyType], null: true
@@ -60,10 +63,10 @@ module Types
       Customer.find_by(id: args[:id])
     end
 
-    def tickets
+    def tickets(promotion_id:)
       return nil unless context[:current_user].source.is_a?(Customer)
 
-      context[:current_user].source.wallet.tickets
+      context[:current_user].source.wallet.tickets.where(contempled_promotion_id: promotion_id)
     end
 
     def customers
