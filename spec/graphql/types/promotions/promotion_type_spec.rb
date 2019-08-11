@@ -52,4 +52,14 @@ describe Types::Promotions::PromotionType do
     subject { described_class.fields['partner'].to_graphql }
     it { is_expected.to be_of_type 'Partner' }
   end
+
+  describe 'start_datetime' do
+    subject { described_class.fields['startDatetime'].to_graphql }
+    it { is_expected.to be_of_type 'DateTime' }
+  end
+
+  describe 'end_datetime' do
+    subject { described_class.fields['endDatetime'].to_graphql }
+    it { is_expected.to be_of_type 'DateTime' }
+  end
 end

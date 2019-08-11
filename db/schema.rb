@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_24_094615) do
+ActiveRecord::Schema.define(version: 2019_08_11_145725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "advertisements", force: :cascade do |t|
+    t.string "title"
+    t.string "description"
+    t.string "img_url"
+    t.datetime "start_datetime"
+    t.datetime "end_datetime"
+    t.boolean "active"
+    t.bigint "partner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["end_datetime"], name: "index_advertisements_on_end_datetime"
+    t.index ["partner_id"], name: "index_advertisements_on_partner_id"
+    t.index ["start_datetime"], name: "index_advertisements_on_start_datetime"
+  end
 
   create_table "auths", force: :cascade do |t|
     t.boolean "adm", default: false, null: false
@@ -168,6 +183,7 @@ ActiveRecord::Schema.define(version: 2019_07_24_094615) do
     t.index ["source_type", "source_id"], name: "index_wallets_on_source_type_and_source_id"
   end
 
+  add_foreign_key "advertisements", "partners"
   add_foreign_key "challenge_progresses", "challenges"
   add_foreign_key "challenge_progresses", "customers"
   add_foreign_key "funds", "wallets", column: "recipient_owner_id"

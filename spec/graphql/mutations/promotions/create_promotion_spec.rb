@@ -80,8 +80,8 @@ RSpec.describe SmartPromoApiSchema do
         expect(returned_promotion['id']).to eq newest_promotion.id
         expect(returned_promotion['name']).to eq name
         expect(returned_promotion['description']).to eq description
-        expect(returned_promotion['startDatetime']).to eq '2017-01-01 00:00:00 UTC'
-        expect(returned_promotion['endDatetime']).to eq '2017-01-02 00:00:00 UTC'
+        expect(returned_promotion['startDatetime']).to eq '2017-01-01T00:00:00Z'
+        expect(returned_promotion['endDatetime']).to eq '2017-01-02T00:00:00Z'
         expect(returned_promotion['active']).to eq active
         expect(returned_promotion['highlighted']).to eq highlighted
         expect(returned_promotion['promotionType']['label']).to eq promotion_types(:club).label

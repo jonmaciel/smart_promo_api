@@ -10,8 +10,8 @@ module Types
       field :goal_quantity, Int, null: true
       field :name, String, null: true
       field :description, String, null: true
-      field :start_datetime, String, null: true
-      field :end_datetime, String, null: true
+      field :start_datetime, Types::DateTimeType, null: true
+      field :end_datetime, Types::DateTimeType, null: true
       field :highlighted, Boolean, null: true
       field :index, Float, null: true
       field :active, Boolean, null: true
