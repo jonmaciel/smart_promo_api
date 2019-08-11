@@ -40,7 +40,7 @@ module Mutations
       attr_reader :id, :input, :partner
 
       def advertisement
-        @advertisement ||= Advertisement.find(id)
+        @advertisement ||= partner.advertisements.find(id)
       end
 
       def validate!

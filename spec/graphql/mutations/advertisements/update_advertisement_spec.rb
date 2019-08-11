@@ -66,7 +66,7 @@ RSpec.describe SmartPromoApiSchema do
 
       it 'returns error' do
         expect_any_instance_of(Advertisement).to_not receive(:update_attribute)
-        expect(returned_errors).to eq "Couldn't find Advertisement with 'id'=-1"
+        expect(returned_errors).to eq "Couldn't find Advertisement with 'id'=-1 [WHERE \"advertisements\".\"partner_id\" = $1]"
       end
     end
 
