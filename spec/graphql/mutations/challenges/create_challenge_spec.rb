@@ -40,7 +40,6 @@ RSpec.describe SmartPromoApiSchema do
               goal
               type
             }
-            errors
           }
         }
       |
@@ -51,7 +50,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['createChallenge']['errors']
+      result['errors'][0]['message']
     end
 
     let(:newest_challenge) do

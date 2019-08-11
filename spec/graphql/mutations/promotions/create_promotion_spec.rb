@@ -53,7 +53,6 @@ RSpec.describe SmartPromoApiSchema do
                 label
               }
             }
-            errors
           }
         }
       |
@@ -63,7 +62,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['createPromotion']['errors']
+      result['errors'][0]['message']
     end
 
     let(:newest_promotion) do
@@ -76,7 +75,6 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       it 'returns the righ promotion' do
-        expect(returned_errors).to be_nil
         expect(returned_promotion['id']).to eq newest_promotion.id
         expect(returned_promotion['name']).to eq name
         expect(returned_promotion['description']).to eq description
@@ -96,7 +94,6 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       it 'returns error and not promotion' do
-        expect(returned_promotion).to be_nil
         expect(returned_errors).to eq 'Invalid user'
       end
     end

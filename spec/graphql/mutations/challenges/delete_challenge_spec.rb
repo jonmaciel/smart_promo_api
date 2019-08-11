@@ -23,17 +23,12 @@ RSpec.describe SmartPromoApiSchema do
     let(:challenge_id) { challenge.id }
     let(:context_admin) { create(:auth, :adm) }
     let(:context) { { current_user: context_admin } }
-    let(:variables) do
-      {
-        challengeId: challenge_id
-      }
-    end
+    let(:variables) { { challengeId: challenge_id } }
     let(:mutation_string) do
       %|
         mutation deleteChallenge($challengeId: Int!) {
           deleteChallenge(challengeId: $challengeId) {
             success
-            errors
           }
         }
       |
@@ -44,7 +39,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['deleteChallenge']['errors']
+      result['errors'][0]['message']
     end
 
     let(:newest_challenge) do

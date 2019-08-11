@@ -39,7 +39,6 @@ RSpec.describe SmartPromoApiSchema do
         mutation ($ticketId: Int!, $cellphoneNumber: String!, $promotionId: Int) {
           giveTicketToUser(ticketId: $ticketId, cellphoneNumber: $cellphoneNumber, promotionId: $promotionId) {
             success
-            errors
           }
         }
       |
@@ -50,7 +49,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['giveTicketToUser']['errors']
+      result['errors'][0]['message']
     end
 
     before do
@@ -123,7 +122,6 @@ RSpec.describe SmartPromoApiSchema do
         end
 
         it 'just returns error' do
-          expect(returned_success).to be_falsey
           expect(returned_errors).to eq 'invalid user'
         end
       end
@@ -137,7 +135,6 @@ RSpec.describe SmartPromoApiSchema do
         end
 
         it 'just returns error' do
-          expect(returned_success).to be_falsey
           expect(returned_errors).to eq "Couldn't find Auth"
         end
       end
@@ -146,7 +143,6 @@ RSpec.describe SmartPromoApiSchema do
         let(:customer) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '28210092000109') }
 
         it 'just returns error' do
-          expect(returned_success).to be_falsey
           expect(returned_errors).to eq 'invalid user'
         end
       end
@@ -156,7 +152,6 @@ RSpec.describe SmartPromoApiSchema do
         let(:ticket) { create(:ticket, partner: second_partner) }
 
         it 'just returns error' do
-          expect(returned_success).to be_falsey
           expect(returned_errors).to eq 'invalid ticket'
         end
       end

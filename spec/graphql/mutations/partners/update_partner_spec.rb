@@ -43,7 +43,6 @@ RSpec.describe SmartPromoApiSchema do
               adress
               cnpj
             }
-            errors
           }
         }
       |
@@ -54,7 +53,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['updatePartner']['errors']
+      result['errors'][0]['message']
     end
 
     let(:reloaded_partner) do
@@ -82,7 +81,6 @@ RSpec.describe SmartPromoApiSchema do
         expect(reloaded_partner.adress).to eq adress
         expect(reloaded_partner.cnpj).to eq cnpj
         expect(reloaded_auth.email).to eq email
-        expect(returned_errors).to be_nil
       end
     end
 
@@ -90,8 +88,8 @@ RSpec.describe SmartPromoApiSchema do
       let(:email) { 'invalid email' }
 
       it 'returns error and not partner' do
-        expect(returned_partner).to be_nil
-        expect(returned_errors).to eq 'Validation failed: Auth email is invalid'
+        expect(returned_errors).to eq 'is invalid'
+        expect(result['errors'][0]['extensions']['field']).to eq 'auth.email'
       end
     end
 
@@ -99,7 +97,6 @@ RSpec.describe SmartPromoApiSchema do
       let(:id) { -1 }
 
       it 'returns error and not partner' do
-        expect(returned_partner).to be_nil
         expect(returned_errors).to eq "Couldn't find Partner with 'id'=-1"
       end
     end

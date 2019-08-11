@@ -16,7 +16,6 @@ module Mutations
       argument :cpf, String, required: false
 
       field :customer, Types::Customers::CustomerType, null: true
-      field :errors, String, null: true
 
       def resolve(input)
         customer = Customer.find(input[:id])
@@ -35,9 +34,13 @@ module Mutations
 
         { customer: customer }
       rescue ActiveRecord::RecordNotFound => e
-        { customer: nil, errors: e.to_s }
+        add_error(e.to_s, extensions: { 'field' => 'root' })
       rescue ActiveRecord::ActiveRecordError => e
-        { customer: nil, errors: e.to_s }
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
       end
     end
   end

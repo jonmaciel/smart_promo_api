@@ -11,7 +11,6 @@ module Mutations
 
       field :success, Boolean, null: true
       field :completed_challenges, [Types::Challenges::ChallengeType], null: true
-      field :errors, String, null: true
 
       def resolve(input)
         @ticket_id = input[:ticket_id]
@@ -25,8 +24,14 @@ module Mutations
         upade_progress!
 
         { success: true, completed_challenges: completed_challenges }
-      rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
-        { success: false, errors: e.to_s }
+      rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
+        add_error(e.to_s)
+      rescue ActiveRecord::ActiveRecordError => e
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
       end
 
       private

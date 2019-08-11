@@ -9,18 +9,15 @@ module Mutations
       argument :challenge_id, Int, required: true
 
       field :success, Boolean, null: true
-      field :errors, String, null: true
 
       def resolve(input)
         @challenge_id = input[:challenge_id]
 
         validate!
 
-        challenge.destroy!
-
-        { success: true }
-      rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
-        { success: false, errors: e.to_s }
+        { success: challenge.destroy! }
+      rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
+        add_error(e.to_s, extensions: { 'field' => 'root' })
       end
 
       private

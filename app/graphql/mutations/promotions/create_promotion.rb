@@ -17,13 +17,32 @@ module Mutations
       argument :active, Boolean, required: false
 
       field :promotion, Types::Promotions::PromotionType, null: true
-      field :errors, String, null: true
 
       def resolve(input)
-        partner = context[:current_user]
-        return { promotion: nil, errors: 'Invalid user' } unless partner.is_a?(Partner)
+        @input = input
+        @partner = context[:current_user]
 
-        promotion = partner.promotions.build(
+        return add_error('Invalid user') unless partner.is_a?(Partner)
+
+        promotion.save!
+
+        { promotion: promotion }
+      rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
+        add_error(e.to_s, extensions: { 'field' => 'root' })
+      rescue ActiveRecord::ActiveRecordError => e
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
+      end
+
+      private
+
+      attr_reader :partner, :input
+
+      def promotion
+        @promotion ||= partner.promotions.build(
           name: input[:name],
           description: input[:description],
           start_datetime: input[:start_datetime],
@@ -34,14 +53,6 @@ module Mutations
           active: input[:active],
           partner: partner
         )
-
-        promotion.save!
-
-        { promotion: promotion }
-      rescue ActiveRecord::RecordNotFound => e
-        { promotion: nil, errors: e.to_s }
-      rescue ActiveRecord::ActiveRecordError => e
-        { promotion: nil, errors: e.to_s }
       end
     end
   end

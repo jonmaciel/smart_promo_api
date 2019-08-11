@@ -18,7 +18,6 @@ module Mutations
       argument :longitude, String, required: false
 
       field :partner, Types::Partners::PartnerType, null: true
-      field :errors, String, null: true
 
       def resolve(input)
         partner = Partner.find(input[:id])
@@ -36,9 +35,13 @@ module Mutations
 
         { partner: partner }
       rescue ActiveRecord::RecordNotFound => e
-        { partner: nil, errors: e.to_s }
+        add_error(e.to_s, extensions: { 'field' => 'root' })
       rescue ActiveRecord::ActiveRecordError => e
-        { partner: nil, errors: e.to_s }
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
       end
     end
   end

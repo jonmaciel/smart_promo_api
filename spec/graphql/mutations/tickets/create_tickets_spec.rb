@@ -41,7 +41,6 @@ RSpec.describe SmartPromoApiSchema do
         mutation ($cellphoneNumber: String!, $quantity: Int!, $promotionId: Int) {
           createTickets(cellphoneNumber: $cellphoneNumber, quantity: $quantity, promotionId: $promotionId) {
             success
-            errors
           }
         }
       |

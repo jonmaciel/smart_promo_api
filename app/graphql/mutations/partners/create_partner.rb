@@ -18,10 +18,29 @@ module Mutations
       argument :longitude, String, required: false
 
       field :partner, Types::Partners::PartnerType, null: true
-      field :errors, String, null: true
 
       def resolve(input)
-        partner = Partner.new(
+        @input = input
+
+        partner.save!
+
+        { partner: partner }
+      rescue ActiveRecord::RecordNotFound => e
+        add_error(e.to_s, extensions: { 'field' => 'root' })
+      rescue ActiveRecord::ActiveRecordError => e
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
+      end
+
+      private
+
+      attr_accessor :input
+
+      def partner
+        @partner ||= Partner.new(
           name: input[:name],
           adress: input[:adress],
           cnpj: input[:cnpj],
@@ -37,12 +56,6 @@ module Mutations
             code: DateTime.now.strftime('%Q')
           }
         )
-
-        partner.save!
-
-        { partner: partner }
-      rescue ActiveRecord::ActiveRecordError => e
-        { partner: nil, errors: e.to_s }
       end
     end
   end

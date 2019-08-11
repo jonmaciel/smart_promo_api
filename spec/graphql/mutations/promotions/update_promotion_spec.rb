@@ -40,7 +40,6 @@ RSpec.describe SmartPromoApiSchema do
               name
               description
             }
-            errors
           }
         }
       |
@@ -49,9 +48,7 @@ RSpec.describe SmartPromoApiSchema do
       result['data']['updatePromotion']['promotion']
     end
 
-    let(:returned_errors) do
-      result['data']['updatePromotion']['errors']
-    end
+    let(:returned_errors) { result['errors'][0]['message'] }
 
     let(:newest_promotion) do
       Promotion.find(returned_promotion['id'])
@@ -59,7 +56,6 @@ RSpec.describe SmartPromoApiSchema do
 
     context 'when the partner has been found' do
       it 'returns the righ promotion' do
-        expect(returned_errors).to be_nil
         expect(returned_promotion['id']).to eq newest_promotion.id
         expect(returned_promotion['name']).to eq name
         expect(returned_promotion['description']).to eq description
@@ -71,7 +67,6 @@ RSpec.describe SmartPromoApiSchema do
 
       it 'returns the righ promotion' do
         expect_any_instance_of(Promotion).to_not receive(:update_attribute)
-        expect(returned_promotion).to be_nil
         expect(returned_errors).to eq 'This promotion doews not belongs to context user'
       end
     end
@@ -81,7 +76,6 @@ RSpec.describe SmartPromoApiSchema do
 
       it 'returns error' do
         expect_any_instance_of(Promotion).to_not receive(:update_attribute)
-        expect(returned_promotion).to be_nil
         expect(returned_errors).to eq "Couldn't find Promotion with 'id'=-1"
       end
     end
@@ -91,8 +85,7 @@ RSpec.describe SmartPromoApiSchema do
 
       it 'returns error' do
         expect_any_instance_of(Promotion).to_not receive(:update_attribute)
-        expect(returned_promotion).to be_nil
-        expect(returned_errors).to eq 'Invalid user'
+        expect(returned_errors).to eq 'invalid user'
       end
     end
   end

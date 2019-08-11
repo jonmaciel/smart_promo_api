@@ -46,7 +46,6 @@ RSpec.describe SmartPromoPublicApiSchema do
               email
               cellphoneNumber
             }
-            errors
           }
         }
       |
@@ -56,7 +55,7 @@ RSpec.describe SmartPromoPublicApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['createPartner']['errors']
+      result['errors'][0]['message']
     end
 
     let(:newest_partner) do
@@ -117,8 +116,8 @@ RSpec.describe SmartPromoPublicApiSchema do
         expect { result }.to change { Wallet.count }.by(0)
       end
       it 'returns error and not partner' do
-        expect(returned_partner).to be_nil
-        expect(returned_errors).to eq 'Validation failed: Auth email is invalid'
+        expect(returned_errors).to eq 'is invalid'
+        expect(result['errors'][0]['extensions']['field']).to eq 'auth.email'
       end
     end
   end

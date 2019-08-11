@@ -28,7 +28,6 @@ RSpec.describe SmartPromoApiSchema do
         mutation deletePartner($id: Int!){
           deletePartner(id: $id) {
             success
-            errors
           }
         }
       |

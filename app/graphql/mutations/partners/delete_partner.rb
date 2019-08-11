@@ -10,16 +10,11 @@ module Mutations
       argument :id, Int, required: true
 
       field :success, Boolean, null: true
-      field :errors, String, null: true
 
-      def resolve(input)
-        partner = Partner.find(input[:id])
-
-        { success: partner.destroy! }
+      def resolve(id:)
+        { success: Partner.find(id).destroy! }
       rescue ActiveRecord::RecordNotFound => e
-        { success: false, errors: e.to_s }
-      rescue ActiveRecord::ActiveRecordError => e
-        { success: false, errors: e.to_s }
+        add_error(e.to_s, extensions: { 'field' => 'root' })
       end
     end
   end

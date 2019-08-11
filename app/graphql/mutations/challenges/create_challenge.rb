@@ -11,7 +11,6 @@ module Mutations
       argument :promotion_type_id, Int, required: true
 
       field :challenge, Types::Challenges::ChallengeType, null: true
-      field :errors, String, null: true
 
       def resolve(input)
         @name = input[:name]
@@ -23,8 +22,14 @@ module Mutations
         challenge.save!
 
         { challenge: challenge }
-      rescue GraphQL::ExecutionError, ActiveRecord::ActiveRecordError => e
-        { challenge: nil, errors: e.to_s }
+      rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
+        add_error(e.to_s)
+      rescue ActiveRecord::ActiveRecordError => e
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
       end
 
       private

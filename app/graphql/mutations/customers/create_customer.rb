@@ -28,10 +28,10 @@ module Mutations
         { customer: customer, auth_token: auth_token }
       rescue ActiveRecord::ActiveRecordError => e
         e.record.errors.each do |field, error|
-          context.add_error(GraphQL::ExecutionError.new(error, extensions: { 'field' => field.to_s }))
+          add_error(error, extensions: { 'field' => field.to_s })
         end
 
-        context.add_error(GraphQL::ExecutionError.new('Validation Error', extensions: { 'field' => 'root' }))
+        add_error('Validation Error', extensions: { 'field' => 'root' })
       end
 
       private

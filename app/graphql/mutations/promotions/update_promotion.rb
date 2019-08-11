@@ -18,23 +18,37 @@ module Mutations
       argument :active, Boolean, required: false
 
       field :promotion, Types::Promotions::PromotionType, null: true
-      field :errors, String, null: true
 
       def resolve(input)
-        partner = context[:current_user]
-        return { promotion: nil, errors: 'Invalid user' } unless partner.is_a?(Partner)
+        @input = input
+        @partner = context[:current_user]
 
-        promotion = Promotion.find(input[:id])
-
-        return { promotion: nil, errors: 'This promotion doews not belongs to context user' } unless promotion.partner == partner
+        validate!
 
         promotion.update_attributes!(input)
 
         { promotion: promotion }
-      rescue ActiveRecord::RecordNotFound => e
-        { promotion: nil, errors: e.to_s }
+      rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
+        add_error(e.to_s)
       rescue ActiveRecord::ActiveRecordError => e
-        { promotion: nil, errors: e.to_s }
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
+      end
+
+      private
+
+      attr_reader :partner, :input
+
+      def promotion
+        @promotion ||= Promotion.find(input[:id])
+      end
+
+      def validate!
+        raise(GraphQL::ExecutionError, 'invalid user') unless partner.is_a?(Partner)
+        raise(GraphQL::ExecutionError, 'This promotion doews not belongs to context user') unless promotion.partner == partner
       end
     end
   end

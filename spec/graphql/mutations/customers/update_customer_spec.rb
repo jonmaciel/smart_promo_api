@@ -40,7 +40,6 @@ RSpec.describe SmartPromoApiSchema do
               name
               cpf
             }
-            errors
           }
         }
       |
@@ -51,7 +50,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['updateCustomer']['errors']
+      result['errors'][0]['message']
     end
 
     let(:reloaded_customer) do
@@ -77,7 +76,6 @@ RSpec.describe SmartPromoApiSchema do
         expect(reloaded_customer.name).to eq name
         expect(reloaded_customer.cpf).to eq cpf
         expect(reloaded_auth.email).to eq email
-        expect(returned_errors).to be_nil
       end
     end
 
@@ -85,8 +83,8 @@ RSpec.describe SmartPromoApiSchema do
       let(:email) { 'invalid email' }
 
       it 'returns error and not customer' do
-        expect(returned_customer).to be_nil
-        expect(returned_errors).to eq 'Validation failed: Auth email is invalid'
+        expect(returned_errors).to eq 'is invalid'
+        expect(result['errors'][0]['extensions']['field']).to eq 'auth.email'
       end
     end
 
@@ -94,7 +92,6 @@ RSpec.describe SmartPromoApiSchema do
       let(:id) { -1 }
 
       it 'returns error and not customer' do
-        expect(returned_customer).to be_nil
         expect(returned_errors).to eq "Couldn't find Customer with 'id'=-1"
       end
     end

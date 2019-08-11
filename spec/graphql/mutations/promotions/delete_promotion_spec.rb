@@ -23,14 +23,13 @@ RSpec.describe SmartPromoApiSchema do
     let!(:promotion) { create(:promotion, name: 'Name', description: 'Description', partner: partner, promotion_type: promotion_type) }
     let(:id) { promotion.id }
     let(:mutation_result_success) { result['data']['deletePromotion']['success'] }
-    let(:mutation_result_errors) { result['data']['deletePromotion']['errors'] }
+    let(:mutation_result_errors) { result['errors'][0]['message'] }
     let(:variables) { { id: id } }
     let(:mutation_string) do
       %|
         mutation deletePromotion($id: Int!){
           deletePromotion(id: $id) {
             success
-            errors
           }
         }
       |
@@ -39,7 +38,6 @@ RSpec.describe SmartPromoApiSchema do
     context "when the partner has been found" do
       it 'returns the righ partner' do
         expect(mutation_result_success).to be_truthy
-        expect(mutation_result_errors).to be_nil
         expect(Promotion.find_by(id: id)).to be_nil
       end
 
@@ -52,7 +50,6 @@ RSpec.describe SmartPromoApiSchema do
       let(:partner) { create(:partner, name: 'Other Partner', adress: 'Adress', cnpj: '18210092000109') }
 
       it 'returns error' do
-        expect(mutation_result_success).to be_falsey
         expect(mutation_result_errors).to eq "Couldn't find Promotion with 'id'=#{id} [WHERE \"promotions\".\"partner_id\" = $1]"
         expect(Promotion.find_by(id: id)).to be_present
       end
@@ -70,7 +67,6 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       it 'returns error' do
-        expect(mutation_result_success).to be_falsey
         expect(mutation_result_errors).to eq "Couldn't find Promotion with 'id'=#{id} [WHERE \"promotions\".\"partner_id\" = $1]"
       end
     end

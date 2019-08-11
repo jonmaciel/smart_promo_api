@@ -29,7 +29,6 @@ RSpec.describe SmartPromoApiSchema do
         mutation deleteCustomer($id: Int!){
           deleteCustomer(id: $id) {
             success
-            errors
           }
         }
       |

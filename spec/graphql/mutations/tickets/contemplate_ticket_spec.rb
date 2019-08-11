@@ -45,7 +45,6 @@ RSpec.describe SmartPromoApiSchema do
             completedChallenges {
               id
             }
-            errors
           }
         }
       |
@@ -60,7 +59,7 @@ RSpec.describe SmartPromoApiSchema do
     end
 
     let(:returned_errors) do
-      result['data']['contemplateTicket']['errors']
+      result['errors'][0]['message']
     end
 
     context 'moving ticket to wallet' do
@@ -152,7 +151,6 @@ RSpec.describe SmartPromoApiSchema do
       let!(:wallet) { create(:wallet, source: second_partner) }
 
       it 'just returns error' do
-        expect(returned_success).to be_falsey
         expect(returned_errors).to eq 'invalid user'
       end
     end
@@ -167,7 +165,6 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       it 'just returns error' do
-        expect(returned_success).to be_falsey
         expect(returned_errors).to eq 'fill just quantity or ticket id'
       end
     end
@@ -181,7 +178,6 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       it 'just returns error' do
-        expect(returned_success).to be_falsey
         expect(returned_errors).to eq 'You do\'t have tickets enough'
       end
     end
@@ -195,7 +191,6 @@ RSpec.describe SmartPromoApiSchema do
       end
 
       it 'just returns error' do
-        expect(returned_success).to be_falsey
         expect(returned_errors).to eq '30 is the ticket limit'
       end
     end
@@ -205,7 +200,6 @@ RSpec.describe SmartPromoApiSchema do
       let(:ticket) { create(:ticket, partner: second_partner) }
 
       it 'just returns error' do
-        expect(returned_success).to be_falsey
         expect(returned_errors).to eq 'invalid ticket'
       end
     end

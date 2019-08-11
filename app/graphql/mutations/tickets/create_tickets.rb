@@ -12,7 +12,6 @@ module Mutations
       argument :cellphone_number, String, required: true
 
       field :success, Boolean, null: true
-      field :errors, String, null: true
 
       def resolve(input)
         @quantity = input[:quantity]
@@ -36,8 +35,14 @@ module Mutations
         Ticket.import tickets
 
         { success: true }
+      rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
+        add_error(e.to_s)
       rescue ActiveRecord::ActiveRecordError => e
-        raise(GraphQL::ExecutionError, e.to_s)
+        e.record.errors.each do |field, error|
+          add_error(error, extensions: { 'field' => field.to_s })
+        end
+
+        add_error('Validation Error', extensions: { 'field' => 'root' })
       end
 
       private
