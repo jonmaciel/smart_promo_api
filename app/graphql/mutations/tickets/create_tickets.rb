@@ -22,7 +22,7 @@ module Mutations
         validate!
         create_loyalty_if_nil!
 
-        Ticket.import tickets
+        Ticket.import(tickets)
 
         { success: true }
       rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
@@ -44,7 +44,7 @@ module Mutations
           1.upto(quantity) do |index|
             elements << Ticket.new(
               partner: partner,
-              wallet: customer.wallet,
+              wallet: customer&.wallet,
               cellphone_number: cellphone_number,
               contempled_promotion_id: promotion_id
             )
@@ -52,23 +52,24 @@ module Mutations
         end
       end
 
-      def customer
-        @customer ||= Auth.find_by!(cellphone_number: cellphone_number).source
-      end
-
-      def partner
-        @partner ||= context[:current_user].source
-      end
-
       def create_loyalty_if_nil!
+        return unless customer
         return if Loyalty.find_by(customer: customer, partner: partner).present?
 
         Loyalty.create(customer: customer, partner: partner)
       end
 
       def validate!
-        raise(GraphQL::ExecutionError, 'invalid user') if !partner.is_a?(Partner) || !customer.is_a?(Customer)
+        raise(GraphQL::ExecutionError, 'invalid user') if customer && (!partner.is_a?(Partner) || !customer.is_a?(Customer))
         raise(GraphQL::ExecutionError, '30 is the ticket limit') if quantity > 30
+      end
+
+      def customer
+        @customer ||= Auth.find_by(cellphone_number: cellphone_number)&.source
+      end
+
+      def partner
+        @partner ||= context[:current_user].source
       end
     end
   end

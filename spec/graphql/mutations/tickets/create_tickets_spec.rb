@@ -27,8 +27,6 @@ RSpec.describe SmartPromoApiSchema do
     let(:quantity) { 10 }
     let(:ticket) { create(:ticket, partner: partner, wallet: wallet) }
     let(:ticket_id) { ticket.id }
-    let(:cost) { 1 }
-    let(:goal_quantity) { 10 }
     let(:customer_cellphone_number) { '41992855077' }
     let(:partner_cellphone_number) { '41992855078' }
     let!(:wallet) { create(:wallet, source: customer) }
@@ -93,6 +91,25 @@ RSpec.describe SmartPromoApiSchema do
             expect { result }.to change { promotion.tickets.count }.by(quantity)
           end
         end
+
+        context 'when custumer has been not found' do
+          let(:variables) do
+            {
+              promotionId: promotion_id,
+              cellphoneNumber: '41988341100',
+              ticketId: ticket_id,
+              quantity: quantity
+            }
+          end
+
+          it 'does not return error' do
+            expect(returned_errors).to be_nil
+          end
+
+          it 'creates tickets without customer to be used on the futore' do
+            expect { result }.to change { promotion.tickets.count }.by(quantity)
+          end
+        end
       end
     end
 
@@ -108,20 +125,6 @@ RSpec.describe SmartPromoApiSchema do
 
         it 'just returns error' do
           expect(returned_errors[0]['message']).to eq 'invalid user'
-        end
-      end
-
-      context 'when custumer has been not found' do
-        let(:variables) do
-          {
-            cellphoneNumber: '41988341100',
-            ticketId: ticket_id,
-            quantity: quantity
-          }
-        end
-
-        it 'just returns error' do
-          expect(returned_errors[0]['message']).to eq "Couldn't find Auth"
         end
       end
 
