@@ -18,5 +18,7 @@ module Types
 
     field :create_challenge, mutation: Mutations::Challenges::CreateChallenge
     field :delete_challenge, mutation: Mutations::Challenges::DeleteChallenge
+
+    field :create_advertisement, mutation: Mutations::Advertisements::CreateAdvertisement
   end
 end
