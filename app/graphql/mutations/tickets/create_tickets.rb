@@ -37,11 +37,11 @@ module Mutations
 
       private
 
-      attr_accessor :cellphone_number, :promotion_id, :quantity, :promotion_id
+      attr_accessor :cellphone_number, :promotion_id, :quantity
 
       def tickets
         @tickets ||= [].tap do |elements|
-          1.upto(quantity) do |index|
+          1.upto(quantity) do
             elements << Ticket.new(
               partner: partner,
               wallet: customer&.wallet,

@@ -37,8 +37,12 @@ RSpec.describe SmartPromoPublicApiSchema do
     end
     let(:mutation_string) do
       %|
-        mutation createCustomer($name: String!, $cpf: String!, $email: String!, $cellphoneNumber: String!, $password: String!, $passwordConfirmation: String!, $code: String!){
-          createCustomer(name: $name,  cpf: $cpf, email: $email, password: $password, cellphoneNumber: $cellphoneNumber, passwordConfirmation: $passwordConfirmation, code: $code) {
+        mutation createCustomer(
+          $name: String!, $cpf: String!, $email: String!, $cellphoneNumber: String!, $password: String!, $passwordConfirmation: String!, $code: String!
+        ){
+          createCustomer(
+            name: $name, cpf: $cpf, email: $email, password: $password, cellphoneNumber: $cellphoneNumber, passwordConfirmation: $passwordConfirmation, code: $code
+          ) {
             customer {
               id
               name
@@ -46,6 +50,7 @@ RSpec.describe SmartPromoPublicApiSchema do
               cellphoneNumber
             }
             authToken
+            ticketCount
           }
         }
       |
@@ -57,6 +62,10 @@ RSpec.describe SmartPromoPublicApiSchema do
 
     let(:returned_token) do
       result['data']['createCustomer']['authToken']
+    end
+
+    let(:returned_ticket_count) do
+      result['data']['createCustomer']['ticketCount']
     end
 
     let(:returned_errors) do
@@ -103,11 +112,24 @@ RSpec.describe SmartPromoPublicApiSchema do
         expect(newest_wallet.code).to eq 'miliseconds'
       end
 
-      it 'alson creates session' do
+      it 'creates session' do
         authenticate_user = double(AuthenticateUser, result: { token: 'token' })
         expect(AuthenticateUser).to receive(:call).with(email, password).and_return(authenticate_user)
 
         expect(returned_token).to eq 'token'
+      end
+
+      context 'when the customer already has tickets' do
+        let(:partner) { create(:partner) }
+        let!(:ticket_1) { create(:ticket, partner: partner, cellphone_number: cellphone_number) }
+        let!(:ticket_2) { create(:ticket, partner: partner, cellphone_number: cellphone_number) }
+
+        it 'returns count of ticket that had been created before' do
+          expect(returned_ticket_count).to eql 2
+
+          expect(ticket_1.reload.wallet).to eq newest_auth.source.wallet
+          expect(ticket_2.reload.wallet).to eq newest_auth.source.wallet
+        end
       end
     end
 

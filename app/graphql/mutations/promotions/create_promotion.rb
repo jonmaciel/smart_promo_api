@@ -18,7 +18,6 @@ module Mutations
       argument :cost, Int, required: true
       argument :goal_quantity, Int, required: true
 
-
       field :promotion, Types::Promotions::PromotionType, null: true
 
       def resolve(input)

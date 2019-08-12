@@ -15,6 +15,7 @@ module Mutations
       argument :password_confirmation, String, required: true
 
       field :customer, Types::Customers::CustomerType, null: true
+      field :ticket_count, Int, null: true
       field :auth_token, String, null: true
 
       def resolve(input)
@@ -25,10 +26,14 @@ module Mutations
 
         customer.save!
 
-        { customer: customer, auth_token: auth_token }
+        tickets.update_all(wallet_id: customer.wallet.id) if tickets.any?
+
+        { customer: customer, auth_token: auth_token, ticket_count: tickets.size }
       rescue ActiveRecord::ActiveRecordError => e
-        e.record.errors.each do |field, error|
-          add_error(error, extensions: { 'field' => field.to_s })
+        if e.is_a?(ActiveRecord::RecordInvalid)
+          e.record.errors.each do |field, error|
+            add_error(error, extensions: { 'field' => field.to_s })
+          end
         end
 
         add_error('Validation Error', extensions: { 'field' => 'root' })
@@ -52,6 +57,10 @@ module Mutations
             code: DateTime.now.strftime('%Q')
           }
         )
+      end
+
+      def tickets
+        @tickets ||= Ticket.where(cellphone_number: customer_attrs[:cellphone_number])
       end
 
       def auth_token
