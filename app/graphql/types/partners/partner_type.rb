@@ -18,6 +18,9 @@ module Types
       field :email, String, null: true, resolve: ->(obj, _, _) { obj.auth.email }
       field :partner_profile, PartnerProfileType, null: true
 
+      # MVP adaptation
+      field :first_promotion, Types::Promotions::PromotionType, null: true
+
       def promotion_count
         object.promotions.count
       end
@@ -28,6 +31,12 @@ module Types
         return 0 if customer.is_a?(Partner)
 
         customer.wallet.tickets.where(partner: object, contempled_promotion_id: nil).count
+      end
+
+      def first_promotion
+        return if object.promotions.none?
+
+        object.promotions.first
       end
     end
   end
