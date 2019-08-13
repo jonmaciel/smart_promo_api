@@ -14,6 +14,8 @@ RSpec.describe SmartPromoPublicApiSchema do
     pp res if res['errors']
     res
   end
+  let!(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: partner) }
+  let(:partner) { create(:partner, name: 'Old Name', adress: 'Old Adress', cnpj: '18210092000108') }
 
   describe 'Login' do
     let(:login) { 'joaomaciel.n@gmail.com' }
@@ -29,6 +31,14 @@ RSpec.describe SmartPromoPublicApiSchema do
         mutation login($login: String!, $password: String!) {
           createSession(login: $login, password: $password) {
             authToken
+            user {
+              ... on Partner {
+                id
+              }
+              ... on Customer {
+                id
+              }
+            }
           }
         }
       |
@@ -38,21 +48,26 @@ RSpec.describe SmartPromoPublicApiSchema do
       result['data']['createSession']['authToken']
     end
 
+    let(:returned_user) do
+      result['data']['createSession']['user']
+    end
+
     let(:returned_error) do
       result['errors'][0]['message']
     end
 
     context 'when it is succefully authenticated' do
       it 'returns the righ challenge' do
-        result = double(AuthenticateUser, result: { token: 'token' }, success?: true)
+        result = double(AuthenticateUser, result: { token: 'token', auth: auth }, success?: true)
 
         expect(AuthenticateUser).to receive(:call).with(login, password).and_return(result)
         expect(returned_token).to eql 'token'
+        expect(returned_user['id']).to eql partner.id
       end
     end
 
     context 'when it is not succefully authenticated' do
-      it 'returns the righ challenge' do
+      it 'returns unauthorized error' do
         result = double(AuthenticateUser, success?: false)
 
         expect(AuthenticateUser).to receive(:call).with(login, password).and_return(result)
