@@ -31,14 +31,6 @@ RSpec.describe SmartPromoPublicApiSchema do
         mutation login($login: String!, $password: String!) {
           createSession(login: $login, password: $password) {
             authToken
-            user {
-              ... on Partner {
-                id
-              }
-              ... on Customer {
-                id
-              }
-            }
           }
         }
       |
@@ -46,10 +38,6 @@ RSpec.describe SmartPromoPublicApiSchema do
 
     let(:returned_token) do
       result['data']['createSession']['authToken']
-    end
-
-    let(:returned_user) do
-      result['data']['createSession']['user']
     end
 
     let(:returned_error) do
@@ -62,7 +50,6 @@ RSpec.describe SmartPromoPublicApiSchema do
 
         expect(AuthenticateUser).to receive(:call).with(login, password).and_return(result)
         expect(returned_token).to eql 'token'
-        expect(returned_user['id']).to eql partner.id
       end
     end
 

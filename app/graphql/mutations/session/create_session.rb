@@ -11,14 +11,20 @@ module Mutations
       argument :password, String, 'User password', required: true
 
       field :auth_token, String, null: true
-      field :user, Types::UserUnion, null: true
+      field :auth, Types::Auth::AuthType, null: true
+      field :partner, Types::Partners::PartnerType, null: true
+      field :customer, Types::Customers::CustomerType, null: true
 
       def resolve(login:, password:)
         @login = login
         @password = password
 
         if auth_user.success?
-          { auth_token: auth_token, user: user }
+          {
+            auth_token: auth_token,
+            auth: auth,
+            user_array_key => user
+          }
         else
           raise(GraphQL::ExecutionError, 'unauthorized')
         end
@@ -36,8 +42,16 @@ module Mutations
         auth_user.result[:token]
       end
 
+      def auth
+        auth_user.result[:auth]
+      end
+
       def user
-        auth_user.result[:auth].source
+        @user ||= auth_user.result[:auth].source
+      end
+
+      def user_array_key
+        @user_array_key ||= user.is_a?(Customer) ? :customer : :partner
       end
     end
   end

@@ -46,8 +46,6 @@ RSpec.describe SmartPromoPublicApiSchema do
             customer {
               id
               name
-              email
-              cellphoneNumber
             }
             authToken
             ticketCount
@@ -106,8 +104,6 @@ RSpec.describe SmartPromoPublicApiSchema do
       it 'returns the righ customer' do
         expect(returned_customer['id']).to eq newest_customer.id
         expect(returned_customer['name']).to eq name
-        expect(returned_customer['cellphoneNumber']).to eq cellphone_number
-        expect(returned_customer['email']).to eq email
         expect(newest_auth.email).to eq email
         expect(newest_wallet.code).to eq 'miliseconds'
       end

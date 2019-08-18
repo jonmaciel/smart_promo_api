@@ -43,8 +43,6 @@ RSpec.describe SmartPromoPublicApiSchema do
               name
               adress
               cnpj
-              email
-              cellphoneNumber
             }
           }
         }
@@ -94,8 +92,6 @@ RSpec.describe SmartPromoPublicApiSchema do
         expect(returned_partner['name']).to eq name
         expect(returned_partner['adress']).to eq adress
         expect(returned_partner['cnpj']).to eq cnpj
-        expect(returned_partner['cellphoneNumber']).to eq cellphone_number
-        expect(returned_partner['email']).to eq email
         expect(newest_auth.email).to eq email
         expect(newest_wallet.code).to eq 'miliseconds'
       end
