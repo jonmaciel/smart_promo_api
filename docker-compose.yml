@@ -1,0 +1,61 @@
+version: '3.6'
+services:
+  smapi:
+    tty: true
+    stdin_open: true
+    image: smapi
+    container_name: smapi
+    volumes:
+      - .:/smapi:delegated
+      - gems:/home/smapi:delegated
+    environment:
+      - DISABLE_SPRING=1
+      - REDIS_URL=redis://redis
+      - PAGER=more
+      - WEB_CONCURRENCY=0
+      - DATABASE_URL=postgres://postgres:postgres@db:5432
+    command: >
+      sh -c '
+        bundle check || bundle install &&
+        rm -f tmp/pids/server.pid &&
+        rails s -b 0.0.0.0'
+    depends_on:
+      - db
+      - redis
+    networks:
+      default:
+        aliases:
+          - smapi
+
+  gems:
+    image: busybox:latest
+    container_name: smapi-gems
+    volumes:
+      - /gems
+
+  db:
+    image: postgres:9.6.8-alpine
+    container_name: indeva-web-db
+    volumes:
+      - pg-data:/var/lib/postgresql/data:delegated
+      - ./scripts:/scripts:delegated
+      - ./tmp:/tmp:delegated
+    ports:
+      - '5432'
+
+  redis:
+    image: redis:3.2.4-alpine
+    container_name: smapi-redis
+    ports:
+      - '6379'
+
+networks:
+  default:
+    driver: bridge
+    name: smapi
+
+volumes:
+  gems:
+  pg-data:
+  elasticsearch:
+  node_modules:

@@ -1,0 +1,161 @@
+#!/usr/bin/env bash
+
+. ./scripts/common-functions
+
+check_required_commands pg_dump pg_restore psql
+
+## Variables
+postgres_url=$2
+tables=(metas semanas feedbacks_sellers dias dia_vendedores store_daily_sales seller_daily_sales)
+extra_tables=(eventos queue_app_event_reasons grouped_lost_reasons evento_erros)
+dest_database=smart_promo_api_development
+
+case $1 in
+  backup)
+
+    if [[ $postgres_url == '' ]]; then
+      red_text 'Missing required param: postgres_url'
+      exit 1
+    fi
+
+    green_line 'This script will remove old dumps and creates new ones from production database'
+    green_text 'Core tables are full dumps and larger tables get only more recent data'
+
+    blue_line 'The following tables are imported by default:'
+    blue_text ${tables[@]}
+
+    yellow_line 'Enter min month to filter data from this tables on format YYYYMM: (required)'
+    read min_month_general
+
+    if [[ $min_month_general == '' ]]; then
+      red_text 'Min month is required!'
+      exit 1
+    fi
+
+    blue_line 'The following extra tables are available and optional:'
+    blue_text ${extra_tables[@]}
+
+    yellow_line 'Enter min month to filter data from this tables on format YYYYMM: (blank for ignore)'
+    red_text 'WARNING: this may take a while if you input a large range of months'
+    read min_month_extra
+
+    yellow_line 'Do you want to restore dumps to your local database after download? (y/N)'
+    read confirm_restore
+
+    if [[ $confirm_restore == 'y' ]]; then
+      yellow_line 'Confirm backup and restore commands? (y/N)'
+    else
+      yellow_line 'Confirm backup commands? (y/N)'
+    fi
+
+    read confirm
+
+    if [[ $confirm != 'y' ]]; then
+      red_line 'Aborted!'
+      exit 1
+    else
+      green_line 'Cool, moving on :)'
+    fi
+
+    green_line 'Removing old database files'
+
+    rm -Rf ./tmp/pg_dumps
+    mkdir -p ./tmp/pg_dumps
+
+    green_line 'Dumping database schema and common data'
+
+    time pg_dump $postgres_url \
+      -Fc --no-acl --no-owner \
+      --exclude-table-data=evento_erros \
+      --exclude-table-data=robo_erros \
+      --exclude-table-data=queue_app_devices \
+      --exclude-table-data=queue_app_event_reasons \
+      --exclude-table-data=eventos \
+      --exclude-table-data=grouped_lost_reasons \
+      --exclude-table-data=seller_daily_sales \
+      --exclude-table-data=store_daily_sales \
+      --exclude-table-data=dia_vendedores \
+      --exclude-table-data=dias \
+      --exclude-table-data=feedbacks_sellers \
+      --exclude-table-data=semanas \
+      --exclude-table-data=metas \
+      > ./tmp/pg_dumps/database.dump
+
+    if [[ $min_month_extra != '' ]]; then
+      tables+=(${extra_tables[@]})
+    fi
+
+    for table in "${tables[@]}"; do
+
+      green_line "Dumping table: $table"
+
+      table_select=$(sed -e "s/MIN_MONTH_GENERAL/$min_month_general/g" -e "s/MIN_MONTH_EXTRA/$min_month_extra/g" ./scripts/dump_selects/$table.sql)
+
+      time psql $postgres_url -c "copy ($table_select) TO STDOUT;" > ./tmp/pg_dumps/$table.txt
+
+    done
+
+  ;;
+  restore)
+
+    green_line 'This script will restore dumps to your local database'
+
+    blue_line 'The following tables are imported by default:'
+    blue_text ${tables[@]}
+
+    blue_line 'The following extra tables are available and optional:'
+    blue_text ${extra_tables[@]}
+
+    yellow_line 'Import extra tables? (y/N)'
+    read import_extra
+
+    if [[ $import_extra == 'y' ]]; then
+      tables+=(${extra_tables[@]})
+    fi
+
+    yellow_line 'Confirm restore commands? (y/N)'
+    read confirm_restore
+
+    if [[ $confirm_restore != 'y' ]]; then
+      red_text 'Aborted!'
+      exit 1
+    else
+      green_text 'Cool, moving on :)'
+    fi
+
+  ;;
+  *)
+    red_line 'You need to inform the operation: backup or restore'
+    exit 1
+  ;;
+esac
+
+if [[ $confirm_restore == 'y' ]]; then
+
+  green_line 'Recreating database schema and common data'
+
+  psql -U postgres -c "DROP DATABASE IF EXISTS \"$dest_database\";" > /dev/null
+  psql -U postgres -c "CREATE DATABASE \"$dest_database\";" > /dev/null
+  time pg_restore --no-acl --no-owner -U postgres -d $dest_database ./tmp/pg_dumps/database.dump
+
+  for table in "${tables[@]}"; do
+
+    if [ -f ./tmp/pg_dumps/$table.txt ]; then
+
+      green_line "Importing table: $table"
+
+      time psql \
+        -U postgres \
+        -c "SET session_replication_role = 'replica'; COPY $table FROM STDIN; SET session_replication_role = 'origin';" \
+        $dest_database < ./tmp/pg_dumps/$table.txt \
+        > /dev/null
+
+    else
+      red_line "File ./tmp/pg_dumps/$table.txt not found"
+    fi
+
+  done
+
+fi
+
+green_line 'Finished with success! \o/'

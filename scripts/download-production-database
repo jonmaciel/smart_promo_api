@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+. ./scripts/common-functions
+
+check_required_commands heroku
+
+blue_line 'Getting credentials for READONLY database'
+postgres_url=$(heroku config:get READONLY_URL --app indeva-production)
+
+if [[ $1 == '--docker' ]]; then
+  docker-compose up -d db
+  time docker-compose exec db ./scripts/pg-dumps backup $postgres_url
+else
+  time ./scripts/pg-dumps backup $postgres_url
+fi

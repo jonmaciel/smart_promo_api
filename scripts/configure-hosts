@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+. ./scripts/common-functions
+
+if [ $EUID -ne 0 ]; then
+  red_text 'This script needs to be run as root!'
+  exit 1
+fi
+
+blue_text 'Configuring projects on /etc/hosts file'
+cat ./scripts/hosts | while read project; do
+  if ! $(grep "$project" /etc/hosts &>/dev/null); then
+    echo $project >> /etc/hosts
+  fi
+done
+
+green_text 'Done!'

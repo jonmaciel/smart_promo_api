@@ -1,0 +1,49 @@
+#!/bin/bash
+
+set -e
+
+blue_text(){
+  echo -e "\e[34m$@"
+}
+
+yellow_text(){
+  echo -e "\e[33m$@"
+}
+
+red_text(){
+  echo -e "\e[91m$@"
+}
+
+green_text(){
+  echo -e "\e[32m$@"
+}
+
+blue_line(){
+  echo
+  blue_text $@
+}
+
+yellow_line(){
+  echo
+  yellow_text $@
+}
+
+red_line(){
+  echo
+  red_text $@
+}
+
+green_line(){
+  echo
+  green_text $@
+}
+
+check_required_commands() {
+  for cmd in "${@}"; do
+    if ! [ -x "$(command -v $cmd)" ]; then
+      red_line "The local $cmd command could not be located."
+      red_text 'Aborted!'
+      exit 1
+    fi
+  done
+}

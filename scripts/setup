@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd $(dirname $(dirname $0))
+
+. ./scripts/common-functions
+
+build_docker_image(){
+  if [ -f Dockerfile  ]; then
+    docker build --build-arg UID=$UID -t smapi .
+  else
+    red_text 'Could not find Dockerfile. WTF?'
+    return
+  fi
+}
+
+export_script_path(){
+  files=(.bashrc .zshrc .bash_profile)
+  for f in ${files[@]}; do
+    filename="$HOME/$f"
+
+    if [ -f $filename  ]; then
+      if ! $(grep 'smart_promo_api/scripts' $filename &>/dev/null);
+      then
+        green_text "Adding smapi script to $f"
+
+        echo >> $filename
+        echo '# smapi' >> $filename
+        echo "export PATH=\"\$PATH:$(pwd)/scripts\"" >> $filename
+      fi
+    fi
+  done
+}
+
+##########################
+### Build docker image ###
+##########################
+
+yellow_text 'Building smapi image, this might take a while...'
+
+if [[ $(docker images | grep smapi) ]]; then
+  green_text 'Found smapi docker image. Do you want to rebuild it? (y/N)'
+  read build_image
+
+  if [[ $build_image == 'y' ]]; then
+    build_docker_image
+  else
+    yellow_text 'Ok, skipping...'
+  fi
+else
+  build_docker_image
+fi
+
+######################
+### Database setup ###
+######################
+
+yellow_text 'Preparing the database...'
+docker-compose run --rm smapi rails db:create
+yellow_text 'Migrating the test environment'
+docker-compose run --rm -e RAILS_ENV=test smapi rails db:migrate
+
+############################
+### Configure /etc/hosts ###
+############################
+yellow_text 'Configuring /etc/hosts'
+blue_text 'You might be asked for your password :)'
+sudo ./scripts/configure-hosts
+
+########################
+### Final moments :) ###
+########################
+
+export_script_path
+
+green_text 'Everything ready to run smapi!'
+
+blue_text 'Now download a database dump and restore it using smapi restore-database command'

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+. ./scripts/common-functions
+
+if [ ! -z "$HEROKU_API_KEY" ] && [ "$RAILS_ENV" != "production" ] ; then
+
+  old_database=$(heroku addons:info DATABASE_URL --app $HEROKU_APP_NAME | sed -n 's/=== \(.*\)/\1/p')
+
+  green_text 'Creating the fork database'
+  heroku addons:create heroku-postgresql:standard-0 --fast --wait --fork indeva-production::DATABASE_URL --as DATABASE_FORK --app $HEROKU_APP_NAME --confirm $HEROKU_APP_NAME
+
+  green_text 'Cleaning queue app devices data'
+  heroku psql DATABASE_FORK --command 'TRUNCATE queue_app_devices;' --app $HEROKU_APP_NAME
+
+  green_text 'Destroying the old database'
+  heroku addons:destroy $old_database --app $HEROKU_APP_NAME --confirm $HEROKU_APP_NAME
+
+  green_text 'Promoting the newly created database'
+  heroku pg:promote DATABASE_FORK --app $HEROKU_APP_NAME
+
+  green_text 'Cleaning firebase data to reset queue app connections'
+  curl -X DELETE "https://indeva-queue-app.firebaseio.com/$RAILS_ENV.json?auth=KqoCl9hQjRBUJmUB69QtsRpgCClp43yBdLKQv8Oh"
+
+else
+  red_text "HEROKU_API_KEY not defined or RAILS_ENV=production"
+  exit 1
+fi

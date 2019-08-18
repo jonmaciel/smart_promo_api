@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+. ./scripts/common-functions
+
+if [[ $1 == '--docker' ]]; then
+  docker-compose up -d db
+  time docker-compose exec db ./scripts/pg-dumps restore
+else
+  time ./scripts/pg-dumps restore
+fi

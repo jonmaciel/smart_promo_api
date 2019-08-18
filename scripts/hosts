@@ -1,0 +1,5 @@
+# Indeva hosts
+127.0.0.1 web.indeva.localhost
+127.0.0.1 queue-app.indeva.localhost
+127.0.0.1 api.indeva.localhost
+127.0.0.1 queue-app.indeva.dev

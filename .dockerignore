@@ -1,0 +1,7 @@
+node_modules
+frontend/build/*
+public/webpack
+tmp
+log
+coverage
+.git

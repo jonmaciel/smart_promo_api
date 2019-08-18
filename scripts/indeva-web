@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+
+. ./scripts/common-functions
+
+check_required_commands docker docker-compose
+
+yellow=$(tput setaf 3)
+
+white=$(tput sgr0)
+
+magenta=$(tput setaf 5)
+
+run(){
+  docker-compose run --rm $args api $@
+}
+
+case $1 in
+  setup)
+    ./scripts/setup
+    ./scripts/smapi
+    blue_text 'Now run: source ~/.bashrc'
+    ;;
+  start)
+    docker-compose up
+    ;;
+  stop)
+    docker-compose stop
+    ;;
+  clean)
+    docker-compose down
+    ;;
+  sh)
+    run sh
+    ;;
+  console)
+    run rails c
+    ;;
+  rspec)
+    run bundle exec rspec ${@:2}
+    ;;
+  prspec)
+    run bundle exec rake parallel:spec
+    ;;
+  prepare-prspec)
+    blue_text 'Preparing databases for running RSpec in parallel'
+    run bundle exec rake parallel:create parallel:load_schema parallel:migrate
+    ;;
+  bundle)
+    run bundle ${@:2}
+    ;;
+  bundle-extensions)
+    docker-compose run --rm --user root web sh -c "apk update && apk add build-base && bundle ${@:2} && chown -R smapi:smapi /home/smapi"
+    ;;
+  run)
+    run ${@:2}
+    ;;
+  sidekiq)
+    run sidekiq ${@:2}
+    ;;
+  debug)
+    if $(docker-compose exec web /bin/true &>/dev/null); then
+      start_back=true
+      docker-compose stop web
+    else
+      start_back=false
+    fi
+
+    docker-compose run --service-ports --rm --use-aliases web
+
+    if $start_back; then docker-compose start web; fi
+    ;;
+  db:setup)
+    echo 'Setting up the database'
+    run rails db:setup
+    ;;
+  db:reset)
+    run rails db:drop db:create
+    args='-e RAILS_ENV=test'
+    run rails db:migrate
+    ;;
+  db:migrate)
+    echo 'Migrating the development database'
+    run rails db:migrate
+    echo 'Migrating the test database'
+    args='-e RAILS_ENV=test'
+    run rails db:migrate
+    ;;
+  db:seed)
+    run rails db:seed
+    ;;
+  rubocop)
+    run rubocop ${@:2}
+    ;;
+  download-production-database)
+    ./scripts/download-production-database --docker
+    ;;
+  restore-database-dumps)
+    ./scripts/restore-database-dumps --docker
+    ;;
+  *)
+    blue_text 'This is the smapi script you can use to run console, bash, rspec and other useful stuff.'
+    echo
+    echo 'Usage: smapi <option> <arguments>'
+    echo 'Examples:'
+    echo 'smapi rspec spec/models'
+    echo 'smapi run bundle exec rake -T'
+    echo
+    echo 'Available options:'
+    echo "${yellow} setup:${white} used to setup the development environment"
+    echo "${yellow} start:${white} brings up smapi web"
+    echo "${yellow} stop:${white} halts smapi and all its dependencies"
+    echo "${yellow} clean:${white} stops and removes all containers"
+    echo "${yellow} sh:${white} brings up a sh session to play with"
+    echo "${yellow} console:${white} rails console"
+    echo "${yellow} rspec:${white} run rspec suite/selected specs"
+    echo "${yellow} prepare-prspec:${white} prepares the databases to run RSpec tests in parallel"
+    echo "${yellow} prspec:${white} run rspec suite in parallel to maximize resource usage and reduce run time. ${magenta}Make sure you run prepare-prspec first!"
+    echo "${yellow} bundle:${white} install gems"
+    echo "${yellow} bundle-extensions:${white} install gems and builds extensions. ${magenta}Use this option when bundler fails to build gem native extensions"
+    echo "${yellow} run:${white} runs the given command inside the container. Can be used to run rake tasks, gems or w/e"
+    echo "${yellow} sidekiq:${white} runs Sidekiq to process background jobs"
+    echo "${yellow} debug:${white} hooks into an interactive session. First place byebug/pry on the code, then run this option"
+    echo "${yellow} db:setup:${white} sets up the database by creating, migrating and seeding"
+    echo "${yellow} db:reset:${white} drops and recreates the database"
+    echo "${yellow} db:migrate:${white} migrates the database"
+    echo "${yellow} db:seed:${white} seeds the development database"
+    echo "${yellow} rubocop:${white} code police will slap you in the face"
+    echo "${yellow} download-production-database:${white} generate backup from production db with more recent data"
+    echo "${yellow} restore-database-dumps:${white} restores the database using dump files from tmp/pg_dumps"
+  ;;
+esac
