@@ -10,9 +10,9 @@ module Types
     def customer_check(field:, value:)
       case field
       when 'cellphone_number'
-        Auth.where(cellphone_number: value)
+        ::Auth.where(cellphone_number: value)
       when 'email'
-        Auth.where(email: value)
+        ::Auth.where(email: value)
       when 'cpf'
         Customer.where(cpf: value)
       end.any?

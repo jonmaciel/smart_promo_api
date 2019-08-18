@@ -115,6 +115,14 @@ RSpec.describe SmartPromoApiSchema do
 
     describe 'erro handling' do
       context 'when the user is not a partner' do
+        let(:context) { { current_user: customer.auth } }
+
+        it 'just returns error' do
+          expect(returned_errors[0]['message']).to eq 'invalid user'
+        end
+      end
+
+      context 'when the customer is invalid' do
         let(:variables) do
           {
             cellphoneNumber: partner_cellphone_number,

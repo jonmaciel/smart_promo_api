@@ -14,6 +14,7 @@ gem 'simple_command'
 gem 'graphql-errors'
 gem 'activerecord-import'
 gem 'rack-cors', require: 'rack/cors'
+gem 'redis-rails'
 gem 'jwt'
 gem 'bcrypt', '3.1.12'
 

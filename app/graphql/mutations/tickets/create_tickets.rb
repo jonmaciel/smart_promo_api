@@ -24,6 +24,8 @@ module Mutations
 
         Ticket.import(tickets)
 
+        notify_user!
+
         { success: true }
       rescue GraphQL::ExecutionError, ActiveRecord::RecordNotFound => e
         add_error(e.to_s)
@@ -52,6 +54,12 @@ module Mutations
         end
       end
 
+      def notify_user!
+        return unless customer
+
+        SmartPromoApiSchema.subscriptions.trigger('newTickets', {}, tickets, scope: customer.auth)
+      end
+
       def create_loyalty_if_nil!
         return unless customer
         return if Loyalty.find_by(customer: customer, partner: partner).present?
@@ -60,7 +68,7 @@ module Mutations
       end
 
       def validate!
-        raise(GraphQL::ExecutionError, 'invalid user') if customer && (!partner.is_a?(Partner) || !customer.is_a?(Customer))
+        raise(GraphQL::ExecutionError, 'invalid user') if !partner.is_a?(Partner) || (customer && !customer.is_a?(Customer))
         raise(GraphQL::ExecutionError, '30 is the ticket limit') if quantity > 30
       end
 
