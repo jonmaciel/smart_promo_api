@@ -14,10 +14,19 @@ module Types
       field :longitude, String, null: true
       field :promotions, [Types::Promotions::PromotionType], null: true
       field :promotion_count, Int, null: true
-      field :partner_profile, PartnerProfileType, null: true
+      field :cellphone_number, String, null: true
+      field :email, String, null: true
 
       # MVP adaptation
       field :first_promotion, Types::Promotions::PromotionType, null: true
+
+      def cellphone_number
+        object.auth.cellphone_number
+      end
+
+      def email
+        object.auth.email
+      end
 
       def promotion_count
         object.promotions.count

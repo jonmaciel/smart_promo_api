@@ -23,6 +23,7 @@ module Types
       argument :promotion_id, Int, 'Costumer ID', required: true
     end
 
+    field :me, Types::MeType, null: true
     field :customers, [Types::Customers::CustomerType], null: true
     field :challenges, [Types::Challenges::ChallengeType], null: true
     field :loyalties, [Types::Customers::LoyaltyType], null: true
@@ -71,6 +72,10 @@ module Types
 
     def customers
       Customer.all
+    end
+
+    def me
+      context[:current_user]
     end
   end
 end

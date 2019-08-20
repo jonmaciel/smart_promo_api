@@ -32,9 +32,4 @@ describe Types::Partners::PartnerType do
     subject { described_class.fields['longitude'].to_graphql }
     it { is_expected.to be_of_type 'String' }
   end
-
-  describe 'partner_profile' do
-    subject { described_class.fields['partnerProfile'].to_graphql }
-    it { is_expected.to be_of_type 'PartnerProfile' }
-  end
 end
