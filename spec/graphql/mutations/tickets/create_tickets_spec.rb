@@ -25,6 +25,7 @@ RSpec.describe SmartPromoApiSchema do
     let(:context) { { current_user: auth } }
     let(:partner_id) { partner.id }
     let(:quantity) { 10 }
+    let(:sales_value_cents) { 1000 }
     let(:ticket) { create(:ticket, partner: partner, wallet: wallet) }
     let(:ticket_id) { ticket.id }
     let(:customer_cellphone_number) { '41992855077' }
@@ -32,14 +33,15 @@ RSpec.describe SmartPromoApiSchema do
     let!(:wallet) { create(:wallet, source: customer) }
     let(:variables) do
       {
+        saleValueCents: sales_value_cents,
         cellphoneNumber: customer_cellphone_number,
         quantity: quantity
       }
     end
     let(:mutation_string) do
       %|
-        mutation ($cellphoneNumber: String!, $quantity: Int!, $promotionId: Int) {
-          createTickets(cellphoneNumber: $cellphoneNumber, quantity: $quantity, promotionId: $promotionId) {
+        mutation ($cellphoneNumber: String!, $quantity: Int!, $saleValueCents: Int!, $promotionId: Int) {
+          createTickets(cellphoneNumber: $cellphoneNumber, saleValueCents: $saleValueCents, quantity: $quantity, promotionId: $promotionId) {
             success
           }
         }
@@ -56,8 +58,15 @@ RSpec.describe SmartPromoApiSchema do
 
     describe 'creating tickets' do
       context "creating 10 tickets" do
-        it 'just creat the tickets' do
+        it 'creates the tickets' do
           expect { result }.to change { Ticket.count }.by(quantity)
+        end
+
+        it 'creates its sales' do
+          expect { result }.to change { Sale.count }.by(1)
+
+          expect(Sale.last.tickets.count).to eq quantity
+          expect(Sale.last.value_cents).to eq sales_value_cents
         end
 
         it 'moves tickets to wallet' do
@@ -79,6 +88,7 @@ RSpec.describe SmartPromoApiSchema do
         let(:promotion_id) { promotion.id }
         let(:variables) do
           {
+            saleValueCents: sales_value_cents,
             promotionId: promotion_id,
             cellphoneNumber: customer_cellphone_number,
             ticketId: ticket_id,
@@ -86,7 +96,7 @@ RSpec.describe SmartPromoApiSchema do
           }
         end
 
-        context "creating 10 tickets" do
+        context 'creating 10 tickets' do
           it 'just creat the tickets' do
             expect { result }.to change { promotion.tickets.count }.by(quantity)
           end
@@ -95,6 +105,7 @@ RSpec.describe SmartPromoApiSchema do
         context 'when custumer has been not found' do
           let(:variables) do
             {
+              saleValueCents: sales_value_cents,
               promotionId: promotion_id,
               cellphoneNumber: '41988341100',
               ticketId: ticket_id,
@@ -125,6 +136,7 @@ RSpec.describe SmartPromoApiSchema do
       context 'when the customer is invalid' do
         let(:variables) do
           {
+            saleValueCents: sales_value_cents,
             cellphoneNumber: partner_cellphone_number,
             ticketId: ticket_id,
             quantity: quantity

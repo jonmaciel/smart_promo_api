@@ -10,6 +10,7 @@ module Mutations
       argument :promotion_id, Int, required: false # loyalty card case!
       argument :quantity, Int, required: true
       argument :cellphone_number, String, required: true
+      argument :sale_value_cents, Int, required: true
 
       field :success, Boolean, null: true
 
@@ -18,6 +19,7 @@ module Mutations
         @promotion_id = input[:promotion_id]
         @cellphone_number = input[:cellphone_number]
         @promotion_id = input[:promotion_id]
+        @sales_value_cents = input[:sale_value_cents]
 
         validate!
         create_loyalty_if_nil!
@@ -39,12 +41,17 @@ module Mutations
 
       private
 
-      attr_accessor :cellphone_number, :promotion_id, :quantity
+      attr_accessor :cellphone_number, :promotion_id, :quantity, :sales_value_cents
+
+      def sale
+        @sale ||= Sale.create(value_cents: sales_value_cents)
+      end
 
       def tickets
         @tickets ||= [].tap do |elements|
           1.upto(quantity) do
             elements << Ticket.new(
+              sale: sale,
               partner: partner,
               wallet: customer&.wallet,
               cellphone_number: cellphone_number,

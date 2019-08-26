@@ -151,6 +151,12 @@ ActiveRecord::Schema.define(version: 2019_08_11_145725) do
     t.index ["promotion_type_id"], name: "index_promotions_on_promotion_type_id"
   end
 
+  create_table "sales", force: :cascade do |t|
+    t.integer "value_cents"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "sms_verification_codes", force: :cascade do |t|
     t.string "phone_number"
     t.string "code"
@@ -165,12 +171,14 @@ ActiveRecord::Schema.define(version: 2019_08_11_145725) do
     t.string "cellphone_number"
     t.bigint "partner_id", null: false
     t.bigint "wallet_id"
+    t.bigint "sale_id"
     t.bigint "contempled_promotion_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cellphone_number"], name: "index_tickets_on_cellphone_number"
     t.index ["contempled_promotion_id"], name: "index_tickets_on_contempled_promotion_id"
     t.index ["partner_id"], name: "index_tickets_on_partner_id"
+    t.index ["sale_id"], name: "index_tickets_on_sale_id"
     t.index ["wallet_id", "partner_id"], name: "index_tickets_on_wallet_id_and_partner_id"
     t.index ["wallet_id"], name: "index_tickets_on_wallet_id"
   end

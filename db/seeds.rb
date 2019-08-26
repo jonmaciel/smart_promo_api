@@ -42,16 +42,21 @@ end
   )
 end
 
+sale = Sale.create(value_cents: 10000)
 
 20.times do
   Ticket.create(
+    sale: sale,
     partner: partner,
     wallet: wallet,
   )
 end
 
+sale = Sale.create(value_cents: 5000)
+
 10.times do
   Ticket.create(
+    sale: sale,
     partner: partner,
     wallet: wallet,
     contempled_promotion: Promotion.first
