@@ -126,18 +126,22 @@ RSpec.describe SmartPromoApiSchema do
 
   describe 'Customers' do
     let(:query_string) { %( query customers { customers { name } } ) }
+    let!(:customer) { create(:customer, name: 'Name 1', cpf: '07712973946') }
+    let!(:partner) { create(:partner, name: 'Abc', cnpj: '71343766000117', adress: 'test') }
+    let(:auth) { create(:auth, email: 'old@mail.com', password: '123456', password_confirmation: '123456', source: partner) }
+    let(:context) { { current_user: auth } }
 
     before do
-      create(:customer, name: 'Name 1', cpf: '07712973946')
       create(:customer, name: 'Name 2', cpf: '07712973947')
+      create(:loyalty, customer: customer, partner: partner)
     end
 
     context 'when the customers have been found' do
       it 'returns all customers ' do
         first_user_name = result['data']['customers'][0]['name']
-        second_user_name = result['data']['customers'][1]['name']
+
         expect(first_user_name).to eq 'Name 1'
-        expect(second_user_name).to eq 'Name 2'
+        expect(result['data']['customers'].size).to eq 1
       end
     end
   end

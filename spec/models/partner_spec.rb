@@ -15,5 +15,7 @@ describe Partner, type: :model do
     it { is_expected.to have_one(:auth) }
     it { is_expected.to have_one(:wallet) }
     it { is_expected.to have_many(:promotions) }
+    it { is_expected.to have_many(:loyalties) }
+    it { is_expected.to have_many(:customers).through(:loyalties) }
   end
 end

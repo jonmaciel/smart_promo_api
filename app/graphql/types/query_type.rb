@@ -71,7 +71,9 @@ module Types
     end
 
     def customers
-      Customer.all
+      return [] if context[:current_user].source.is_a?(Customer)
+
+      context[:current_user].source.customers
     end
 
     def me
