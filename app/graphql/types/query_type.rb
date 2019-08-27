@@ -11,6 +11,8 @@ module Types
       argument :partner_id, Int, 'Partner ID', required: true
     end
 
+    field :first_promotion, Types::Promotions::PromotionType, null: true
+
     field :promotions, [Types::Promotions::PromotionType], null: true do
       argument :partner_id, Int, 'Partner ID', required: true
     end
@@ -51,6 +53,15 @@ module Types
       Partner.find_by(id: args[:id])
     end
 
+    def first_promotion
+      user = context[:current_user].source
+
+      return nil unless user.is_a?(Partner)
+
+
+      user.promotions.first
+    end
+
     def promotion(args)
       Promotion.find_by(partner_id: args[:partner_id], id: args[:id])
     end
@@ -65,7 +76,7 @@ module Types
     end
 
     def tickets(promotion_id:)
-      return nil unless context[:current_user].source.is_a?(Customer)
+      return [] unless context[:current_user].source.is_a?(Customer)
 
       context[:current_user].source.wallet.tickets.where(contempled_promotion_id: promotion_id)
     end

@@ -18,6 +18,10 @@ module Types
       field :promotion_type, Types::Promotions::PromotionTypeType, null: true
       field :balance, Int, null: true
 
+      field :mpv_customer_fidelity, [Types::Tickets::TicketType], null: true do
+        argument :customer_id, Int, 'Costumer ID', required: true
+      end
+
       field :partner, Types::Partners::PartnerType, null: true
 
       def balance
@@ -26,6 +30,16 @@ module Types
         return 0 if customer.is_a?(Partner)
 
         object.tickets.where(wallet: customer.wallet).count
+      end
+
+      # TODO: test it!
+      def mpv_customer_fidelity(customer_id:)
+        user = context[:current_user].source
+
+        return [] unless user.is_a?(Partner)
+
+        customer = context[:current_user].source.customers.find(customer_id)
+        customer.wallet.tickets.where(contempled_promotion_id: user.promotions.first.id)
       end
     end
   end
