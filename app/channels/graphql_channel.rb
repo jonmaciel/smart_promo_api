@@ -1,5 +1,5 @@
 class GraphqlChannel < ApplicationCable::Channel
-  before_action :authenticate_request
+  before_subscribe :authenticate_request
 
   attr_reader :current_user
 

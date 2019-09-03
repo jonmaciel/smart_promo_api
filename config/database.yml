@@ -19,6 +19,4 @@ test:
 
 production:
   <<: *default
-  database: smart_promo_api_production
-  username: smart_promo_api
-  password: <%= ENV['SMART_PROMO_API_DATABASE_PASSWORD'] %>
+  url: <%= ENV.fetch('DATABASE_URL', '') %>
