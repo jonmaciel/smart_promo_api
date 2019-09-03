@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GraphqlChannel < ApplicationCable::Channel
   before_subscribe :authenticate_request
 
@@ -14,34 +16,32 @@ class GraphqlChannel < ApplicationCable::Channel
 
     context = {
       current_user: current_user,
-      channel: self,
+      channel: self
     }
 
-    result = GraphqlRailsApiSchema.execute({
+    result = GraphqlRailsApiSchema.execute(
       query: query,
       context: context,
       variables: variables,
       operation_name: operation_name
-    })
+    )
 
     payload = {
       result: result.subscription? ? { data: nil } : result.to_h,
-      more: result.subscription?,
+      more: result.subscription?
     }
 
     # Track the subscription here so we can remove it
     # on unsubscribe.
-    if result.context[:subscription_id]
-      @subscription_ids << context[:subscription_id]
-    end
+    @subscription_ids << context[:subscription_id] if result.context[:subscription_id]
 
     transmit(payload)
   end
 
   def unsubscribed
-    @subscription_ids.each { |sid|
+    @subscription_ids.each do |sid|
       GraphqlRailsApiSchema.subscriptions.delete_subscription(sid)
-    }
+    end
   end
 
   def authenticate_request

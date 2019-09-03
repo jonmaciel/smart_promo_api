@@ -58,7 +58,6 @@ module Types
 
       return nil unless user.is_a?(Partner)
 
-
       user.promotions.first
     end
 

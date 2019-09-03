@@ -7,6 +7,15 @@ module Types
       argument :value, String, required: true
     end
 
+    field :tickets, [Types::Tickets::TicketType], null: true do
+      argument :promotion_id, Int, required: true
+      argument :cellphone_number, String, required: true
+    end
+
+    field :promotion_by_partner, Types::Promotions::PromotionType, null: true do
+      argument :partner_id, Int, required: true
+    end
+
     def customer_check(field:, value:)
       case field
       when 'cellphone_number'
@@ -16,6 +25,18 @@ module Types
       when 'cpf'
         Customer.where(cpf: value)
       end.any?
+    end
+
+    def tickets(promotion_id:, cellphone_number:)
+      customer = ::Auth.find_by(cellphone_number: cellphone_number)&.source
+
+      return [] unless customer
+
+      customer.wallet.tickets.where(contempled_promotion_id: promotion_id)
+    end
+
+    def promotion_by_partner(partner_id:)
+      Promotion.where(partner_id: partner_id).first
     end
   end
 end

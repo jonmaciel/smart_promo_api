@@ -34,6 +34,7 @@ module Types
 
       def balance
         return 0 unless context[:current_user]
+
         customer = context[:current_user].source
 
         return 0 if customer.is_a?(Partner)
