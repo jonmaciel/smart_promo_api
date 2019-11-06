@@ -236,7 +236,7 @@ RSpec.describe SmartPromoApiSchema do
       let(:context) { { current_user: auth } }
 
       it 'returns nill' do
-        expect(result['data']['tickets']).to be_nil
+        expect(result['data']['tickets']).to be_empty
       end
     end
   end
