@@ -23,3 +23,7 @@ Metrics/BlockLength:
 Layout/EmptyLineAfterMagicComment:
   Exclude:
     - 'app/models/**/*.rb'
+
+Bundler/OrderedGems:
+  Exclude:
+    - 'Gemfile'
